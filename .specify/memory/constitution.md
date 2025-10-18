@@ -1,8 +1,8 @@
 <!--
 Sync Impact Report:
-Version change: 1.4.0 → 1.5.0
+Version change: 1.5.0 → 1.6.0
 Modified principles: None
-Added sections: None
+Added sections: Database Access and Migrations
 Removed sections: None
 Templates requiring updates:
 - .specify/templates/plan-template.md: ✅ updated (no changes needed)
@@ -43,6 +43,9 @@ The database container must be named `db`, run from Docker, and use PostgreSQL a
 ### IX. Frontend Proxy and Routing
 Nginx can be used as a frontend proxy. It should be configured to proxy requests for "location /" to the `frontend-app` and "location /api" to the `backend-app`.
 
+### X. Database Access and Migrations
+It is forbidden to use JPA for database access; only jOOQ is allowed. Liquibase must be used for managing database migrations.
+
 ## Technology Stack
 
 The application will utilize the following core technologies:
@@ -60,4 +63,4 @@ The application components will be deployed as isolated Docker containers, ensur
 
 This Constitution outlines the fundamental principles and architectural decisions for the project. All development activities must adhere to these principles. Amendments to this Constitution require careful consideration and approval.
 
-**Version**: 1.5.0 | **Ratified**: 2025-10-18 | **Last Amended**: 2025-10-18
+**Version**: 1.6.0 | **Ratified**: 2025-10-18 | **Last Amended**: 2025-10-19
