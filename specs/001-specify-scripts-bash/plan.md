@@ -14,11 +14,11 @@ As a developer, I want to launch a minimal application using Docker Compose, con
 **Language/Version**: Java 17 (Backend), JavaScript/TypeScript (Frontend - React)  
 **Primary Dependencies**: Spring Boot (Backend), React (Frontend), Docker Compose (Orchestration), Nginx (Proxy), PostgreSQL (Database), SLF4J/Logback (Backend Logging)  
 **Storage**: PostgreSQL  
-**Testing**: NEEDS CLARIFICATION  
+**Testing**: Unit and integration tests  
 **Target Platform**: Docker containers on a Linux-compatible host
 **Project Type**: Web application (frontend + backend + database)  
-**Performance Goals**: NEEDS CLARIFICATION  
-**Constraints**: NEEDS CLARIFICATION  
+**Performance Goals**: Sub-second response time for single user  
+**Constraints**: No specific constraints beyond minimal functionality  
 **Scale/Scope**: Minimal application for demonstrating inter-service communication
 
 ## Constitution Check
@@ -82,3 +82,9 @@ docker-compose.override.yml
 |-----------|------------|-------------------------------------|
 | [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
 | [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+
+## Clarifications
+### Session 2025-10-18
+- Q: What level of testing is expected for this minimal application? → A: Unit and integration tests.
+- Q: What are the expected performance goals for the "ping" request? → A: Sub-second response time for single user.
+- Q: Are there any specific constraints for this minimal application? → A: No specific constraints beyond minimal functionality.
