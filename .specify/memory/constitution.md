@@ -1,7 +1,7 @@
 <!--
 Sync Impact Report:
-Version change: 1.3.0 → 1.4.0
-Modified principles: IV. Database (refined), VIII. Database Configuration (added)
+Version change: 1.4.0 → 1.5.0
+Modified principles: None
 Added sections: None
 Removed sections: None
 Templates requiring updates:
@@ -40,6 +40,9 @@ The frontend application code must be located in the `frontend-app` folder at th
 ### VIII. Database Configuration
 The database container must be named `db`, run from Docker, and use PostgreSQL as the database system.
 
+### IX. Frontend Proxy and Routing
+Nginx can be used as a frontend proxy. It should be configured to proxy requests for "location /" to the `frontend-app` and "location /api" to the `backend-app`.
+
 ## Technology Stack
 
 The application will utilize the following core technologies:
@@ -47,13 +50,14 @@ The application will utilize the following core technologies:
 - Frontend: React
 - Database: PostgreSQL
 - Containerization: Docker
+- Proxy: Nginx
 
 ## Deployment Strategy
 
-The application components will be deployed as isolated Docker containers, ensuring portability and environment consistency. The project will utilize `docker-compose.yml` and `docker-compose.override.yml` for defining and managing these containerized services during local development.
+The application components will be deployed as isolated Docker containers, ensuring portability and environment consistency. The project will utilize `docker-compose.yml` and `docker-compose.override.yml` for defining and managing these containerized services during local development. Nginx can be used as a frontend proxy for routing requests to the appropriate backend and frontend services.
 
 ## Governance
 
 This Constitution outlines the fundamental principles and architectural decisions for the project. All development activities must adhere to these principles. Amendments to this Constitution require careful consideration and approval.
 
-**Version**: 1.4.0 | **Ratified**: 2025-10-18 | **Last Amended**: 2025-10-18
+**Version**: 1.5.0 | **Ratified**: 2025-10-18 | **Last Amended**: 2025-10-18
