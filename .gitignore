@@ -1,1 +1,16 @@
 .idea/
+target/
+*.class
+*.jar
+.gradle/
+build/
+node_modules/
+dist/
+*.log
+.env*
+coverage/
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/

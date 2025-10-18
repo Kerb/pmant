@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+*.log
+.env*
+coverage/
+.git/
+.gitignore
+.dockerignore
+.idea/
+.vscode/
+*.tmp
+*.swp
+Thumbs.db
+.DS_Store
