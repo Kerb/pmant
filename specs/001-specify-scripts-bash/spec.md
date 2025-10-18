@@ -34,6 +34,7 @@ As a developer, I want to click the "ping" button on the frontend so that a requ
 
 1. **Given** the minimal application is running and the `index.html` page is displayed, **When** I click the "ping" button, **Then** an HTTP request is sent to the backend.
 2. **Given** the request is sent to the backend, **When** the backend processes the request, **Then** the frontend displays a "pong" message or similar success indicator.
+3. **Given** the "ping" button is clicked, **When** the frontend is waiting for a response from the backend, **Then** the frontend displays "Loading..." text.
 
 ---
 
@@ -53,6 +54,8 @@ As a developer, I want to click the "ping" button on the frontend so that a requ
 - **FR-005**: The backend service MUST respond to the "ping" request with a predefined success message.
 - **FR-006**: The frontend MUST display the response from the backend.
 - **FR-007**: The frontend MUST display an error message if the backend is unreachable or returns an error.
+- **FR-008**: The frontend MUST display "Loading..." text while waiting for a response from the backend after a "ping" request.
+- **FR-009**: The backend application MUST use SLF4J and Logback for logging, configured with a console appender.
 
 ### Key Entities
 
@@ -68,3 +71,9 @@ As a developer, I want to click the "ping" button on the frontend so that a requ
 - **SC-002**: A developer can access the frontend `index.html` page in a web browser.
 - **SC-003**: Clicking the "ping" button on the frontend successfully triggers a backend response, and the response is displayed on the frontend.
 - **SC-004**: The application demonstrates basic inter-service communication between frontend and backend.
+
+## Clarifications
+### Session 2025-10-18
+- Q: What should the frontend display while waiting for a backend response after clicking "ping"? → A: A simple "Loading..." text.
+- Q: Should the backend log incoming "ping" requests to the console? → A: Use slf4j and logback for backend app logging, configure just console appender for now.
+- Q: Were any specific frontend frameworks or backend technologies considered and rejected for this minimal setup? → A: No - For this minimal setup, the chosen technologies (React, Spring Boot) are standard and no specific alternatives were explicitly rejected.
