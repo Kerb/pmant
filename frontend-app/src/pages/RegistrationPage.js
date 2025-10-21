@@ -1,17 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import RegistrationForm from '../components/RegistrationForm';
 import { register } from '../services/authService';
 
-function RegistrationPage() {
+function RegistrationPage({ setIsLoggedIn }) {
+  const navigate = useNavigate();
+
   const handleRegister = async (login, password) => {
     try {
       const response = await register(login, password);
       console.log('Registration successful:', response);
-      alert('Registration successful!');
-      // Here you would typically redirect the user or update global state
+      setIsLoggedIn(true); // Set isLoggedIn to true on successful registration
+      navigate('/');
     } catch (error) {
       console.error('Registration failed:', error.message);
-      throw error; // Re-throw to be caught by the form component
+      throw error;
     }
   };
 

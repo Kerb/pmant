@@ -12,13 +12,12 @@ export const register = async (login, password) => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || 'Registration failed');
+    throw new Error(data.message || 'Registration failed');
   }
 
   // Assuming successful registration also logs the user in and returns some user data
   // For now, we'll just return the data from the backend
-  const loginResponse = await login(login, password); // Automatically log in after registration
-  return loginResponse;
+  return data;
 };
 
 export const login = async (login, password) => {
