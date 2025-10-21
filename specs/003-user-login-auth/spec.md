@@ -50,6 +50,9 @@ As a user, if I enter incorrect login or password into the authorization form, I
 -   **FR-004**: If the login credentials are valid, the system MUST authenticate the user and establish a session.
 -   **FR-005**: If the login credentials are valid, the system MUST redirect the authenticated user to their designated homepage.
 -   **FR-006**: If the login credentials are invalid (incorrect login or password), the system MUST display the exact error message "Login or user does not exist" on the login page.
+-   **FR-007**: The system MUST enforce a password policy requiring a minimum of 8 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character.
+-   **FR-008**: The system MUST implement rate limiting for login attempts based on IP address to mitigate brute-force attacks.
+-   **FR-009**: The system MUST treat user logins (username/email) as case-insensitive during authentication.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -66,3 +69,15 @@ As a user, if I enter incorrect login or password into the authorization form, I
 -   **SC-002**: The system accurately displays the error message "Login or user does not exist" for 100% of invalid login attempts.
 -   **SC-003**: Authenticated users are successfully redirected to their homepage in 100% of successful login attempts.
 -   **SC-004**: The login form is accessible and usable across all supported browsers and devices.
+-   **SC-005**: The login system MUST support up to 1,000 concurrent users without performance degradation.
+-   **SC-006**: The authentication service MUST maintain a 99% uptime, allowing for no more than approximately 3.65 days of downtime per year.
+
+## Clarifications
+
+### Session 2025-10-21
+
+- Q: What are the requirements for user passwords? → A: Minimum 8 characters, including uppercase, lowercase, numbers, and special characters.
+- Q: How should the system protect against brute-force login attempts? → A: Rate limit login attempts per IP address.
+- Q: Should the user login (username/email) be treated as case-sensitive or case-insensitive during authentication? → A: Case-insensitive (e.g., "User@example.com" is same as "user@example.com").
+- Q: What is the expected number of concurrent users or daily active users for the login system? → A: Up to 1,000 concurrent users.
+- Q: What is the target uptime percentage for the authentication service? → A: 99% (allowing ~3.65 days downtime per year).
