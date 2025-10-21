@@ -14,7 +14,7 @@ The user registration feature will allow new users to create an account by provi
 **Language/Version**: Java 17 (Backend), JavaScript/TypeScript (Frontend)  
 **Primary Dependencies**: Spring Boot (Backend), React (Frontend)  
 **Storage**: PostgreSQL  
-**Testing**: Backend: JUnit 5 and Mockito; Frontend: Jest and React Testing Library  
+**Testing**: Backend: JUnit 5 and Mockito; Frontend: Jest and React Testing Library (Unit/Integration), Cypress/Playwright (E2E)  
 **Target Platform**: Docker containers on a Linux-compatible host
 **Project Type**: Web application (frontend + backend + database)  
 **Performance Goals**: 95% of new users can successfully complete the registration process within 30 seconds.  
@@ -45,7 +45,7 @@ specs/[###-feature]/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Initiated in Phase 1, finalized/updated in Final Phase
 ├── contracts/           # Phase 1 output (/speckit.plan command)
 └── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```

@@ -56,7 +56,9 @@ A user accesses the registration page on various devices and screen sizes. The l
 - How does the system handle special characters in login or password?
 - What is the maximum length for login and password?
 - How does the form centering behave on extremely small screen sizes where content might be constrained?
+    *   **Resolution**: On extremely small screen sizes, the form should prioritize responsiveness, potentially scaling down or allowing scrolling, while maintaining its central alignment within the *available content area*. It should not overflow the viewport or become unusable.
 - What happens if other UI elements (e.g., headers, footers) are present? Does the form center relative to the available content area or the entire viewport?
+    *   **Resolution**: The form MUST center relative to the *available content area* (i.e., the viewport minus any fixed headers, footers, or sidebars).
 
 ## Requirements *(mandatory)*
 
@@ -76,7 +78,15 @@ A user accesses the registration page on various devices and screen sizes. The l
 ### Key Entities *(include if feature involves data)*
 
 - **User**: Represents a registered individual in the system.
-    *   Attributes: Login (unique identifier), Password (hashed using BCrypt with a randomly generated salt per user).
+    *   Attributes:
+        *   **Login**:
+            *   Type: String (VARCHAR)
+            *   Constraints: Unique, minimum 3 characters, maximum 50 characters.
+            *   Allowed Characters: Alphanumeric characters (a-z, A-Z, 0-9), underscores (_), and hyphens (-).
+        *   **Password**:
+            *   Type: String (VARCHAR) - stores hashed value.
+            *   Constraints: Hashed using BCrypt with a randomly generated salt per user, minimum 8 characters (before hashing), maximum 72 characters (before hashing).
+            *   Allowed Characters: All printable ASCII characters.
 
 ### Technical Stack
 
