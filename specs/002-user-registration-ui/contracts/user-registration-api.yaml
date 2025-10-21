@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: User Registration API
+  version: 1.0.0
+paths:
+  /api/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - login
+                - password
+              properties:
+                login:
+                  type: string
+                  description: Unique username for the new user.
+                  minLength: 1
+                password:
+                  type: string
+                  description: Password for the new user.
+                  minLength: 8
+      responses:
+        '200':
+          description: User successfully registered and logged in.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully.
+                  userId:
+                    type: string
+                    format: uuid
+                    example: a1b2c3d4-e5f6-7890-1234-567890abcdef
+        '400':
+          description: Invalid input (e.g., password too short, empty fields).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Password must be at least 8 characters long.
+        '409':
+          description: Login already taken.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Login already exists.
