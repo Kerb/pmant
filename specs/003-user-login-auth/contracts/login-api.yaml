@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: User Authentication API
+  version: 1.0.0
+paths:
+  /api/auth/login:
+    post:
+      summary: Authenticate user and log in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - login
+                - password
+              properties:
+                login:
+                  type: string
+                  description: User's login (username or email), case-insensitive.
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  description: User's password.
+                  example: StrongP@ssw0rd
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful
+        '401':
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login or user does not exist
