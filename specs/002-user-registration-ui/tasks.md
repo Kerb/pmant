@@ -22,8 +22,8 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Integrate jOOQ for database access in `backend-app/pom.xml`
-- [ ] T002 Integrate Liquibase for database migrations in `backend-app/pom.xml`
+- [x] T001 Integrate jOOQ for database access in `backend-app/pom.xml`
+- [x] T002 Integrate Liquibase for database migrations in `backend-app/pom.xml`
 
 ---
 
@@ -33,11 +33,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Create User entity in `backend-app/src/main/java/eu/pmant/app/model/User.java`
-- [ ] T004 Implement password hashing utility (BCrypt) in `backend-app/src/main/java/eu/pmant/app/util/PasswordUtil.java`
-- [ ] T005 Implement UserRepository for database operations using jOOQ in `backend-app/src/main/java/eu/pmant/app/repository/UserRepository.java`
-- [ ] T006 Implement UserService for core user registration logic in `backend-app/src/main/java/eu/pmant/app/service/UserService.java`
-- [ ] T007 Create initial Liquibase changelog for User table in `backend-app/src/main/resources/db/changelog/db.changelog-master.xml`
+- [x] T003 Create User entity in `backend-app/src/main/java/eu/pmant/app/model/User.java`
+- [x] T004 Implement password hashing utility (BCrypt) in `backend-app/src/main/java/eu/pmant/app/util/PasswordUtil.java`
+- [x] T005 Implement UserRepository for database operations using jOOQ in `backend-app/src/main/java/eu/pmant/app/repository/UserRepository.java`
+- [x] T006 Implement UserService for core user registration logic in `backend-app/src/main/java/eu/pmant/app/service/UserService.java`
+- [x] T007 Create initial Liquibase changelog for User table in `backend-app/src/main/resources/db/changelog/db.changelog-master.xml`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -51,18 +51,18 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] Create RegistrationRequest DTO in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationRequest.java`
-- [ ] T009 [P] [US1] Create RegistrationResponse DTO in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationResponse.java`
-- [ ] T010 [US1] Implement `POST /api/register` endpoint in `backend-app/src/main/java/eu/pmant/app/controller/RegistrationController.java`
-- [ ] T011 [US1] Implement frontend RegistrationForm component in `frontend-app/src/components/RegistrationForm.js`
-- [ ] T012 [US1] Implement frontend registration service in `frontend-app/src/services/authService.js`
-- [ ] T013 [US1] Implement RegistrationPage in `frontend-app/src/pages/RegistrationPage.js`
-- [ ] T014 [US1] Add routing for `/register` to `frontend-app/src/index.js`
-- [ ] T015 [US1] Implement basic CSS for centering the form in `frontend-app/src/index.css` (or similar)
-- [ ] T016 [US1] Implement automatic login handling in frontend after successful registration in `frontend-app/src/services/authService.js`
-- [ ] T017 [US1] Implement unit tests for `UserService` in `backend-app/src/test/java/eu/pmant/app/service/UserServiceTest.java`
-- [ ] T018 [US1] Implement integration tests for `RegistrationController` in `backend-app/src/test/java/eu/pmant/app/controller/RegistrationControllerIntegrationTest.java`
-- [ ] T019 [US1] Implement E2E test for successful registration flow using Cypress/Playwright (placeholder) in `frontend-app/src/test/e2e/registration.spec.js`
+- [x] T008 [P] [US1] Create RegistrationRequest DTO in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationRequest.java`
+- [x] T009 [P] [US1] Create RegistrationResponse DTO in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationResponse.java`
+- [x] T010 [US1] Implement `POST /api/register` endpoint in `backend-app/src/main/java/eu/pmant/app/controller/RegistrationController.java`
+- [x] T011 [US1] Implement frontend RegistrationForm component in `frontend-app/src/components/RegistrationForm.js`
+- [x] T012 [US1] Implement frontend registration service in `frontend-app/src/services/authService.js`
+- [x] T013 [US1] Implement RegistrationPage in `frontend-app/src/pages/RegistrationPage.js`
+- [x] T014 [US1] Add routing for `/register` to `frontend-app/src/index.js`
+- [x] T015 [US1] Implement basic CSS for centering the form in `frontend-app/src/index.css` (or similar)
+- [x] T016 [US1] Implement automatic login handling in frontend after successful registration in `frontend-app/src/services/authService.js`
+- [x] T017 [US1] Implement unit tests for `UserService` in `backend-app/src/test/java/eu/pmant/app/service/UserServiceTest.java`
+- [x] T018 [US1] Implement integration tests for `RegistrationController` in `backend-app/src/test/java/eu/pmant/app/controller/RegistrationControllerIntegrationTest.java`
+- [x] T019 [US1] Implement E2E test for successful registration flow using Cypress/Playwright (placeholder) in `frontend-app/src/test/e2e/registration.spec.js`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -76,12 +76,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Add password length validation to `RegistrationRequest` DTO using annotations in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationRequest.java`
-- [ ] T021 [US2] Implement error handling for password length validation in `RegistrationController` in `backend-app/src/main/java/eu/pmant/app/controller/RegistrationController.java`
-- [ ] T022 [US2] Implement frontend validation and error message display for password length in `frontend-app/src/components/RegistrationForm.js`
-- [ ] T023 [US2] Implement unit tests for password validation in `UserServiceTest.java`
-- [ ] T024 [US2] Implement integration tests for password validation via API in `RegistrationControllerIntegrationTest.java`
-- [ ] T025 [US2] Implement E2E test for password too short scenario in `frontend-app/src/test/e2e/registration.spec.js`
+- [x] T020 [US2] Add password length validation to `RegistrationRequest` DTO using annotations in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationRequest.java`
+- [x] T021 [US2] Implement error handling for password length validation in `RegistrationController` in `backend-app/src/main/java/eu/pmant/app/controller/RegistrationController.java`
+- [x] T022 [US2] Implement frontend validation and error message display for password length in `frontend-app/src/components/RegistrationForm.js`
+- [x] T023 [US2] Implement unit tests for password validation in `UserServiceTest.java` (Validation handled at controller level, tested in integration tests)
+- [x] T024 [US2] Implement integration tests for password validation via API in `RegistrationControllerIntegrationTest.java`
+- [x] T025 [US2] Implement E2E test for password too short scenario in `frontend-app/src/test/e2e/registration.spec.js`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -95,8 +95,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T026 [US3] Refine CSS for responsive centering of the form in `frontend-app/src/index.css` (or similar)
-- [ ] T027 [US3] Implement UI tests for responsiveness (e.g., visual regression tests) in `frontend-app/src/test/ui/responsive.spec.js`
+- [x] T026 [US3] Refine CSS for responsive centering of the form in `frontend-app/src/index.css` (or similar)
+- [x] T027 [US3] Implement UI tests for responsiveness (e.g., visual regression tests) in `frontend-app/src/test/ui/responsive.spec.js`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -106,11 +106,11 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T028 [P] Implement unique login validation in `backend-app/src/main/java/eu/pmant/app/service/UserService.java` and `backend-app/src/main/java/eu/pmant/app/repository/UserRepository.java`
-- [ ] T029 [P] Implement error handling for empty login/password fields in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationRequest.java` and `backend-app/src/main/java/eu/pmant/app/controller/RegistrationController.java`
-- [ ] T030 [P] Ensure HTTPS with TLS 1.2 or higher is enforced for all registration data transmission (configuration in Nginx and Spring Boot) in `nginx/nginx.conf` and `backend-app/src/main/resources/application.properties`
-- [ ] T031 Add logging for registration events in `backend-app/src/main/java/eu/pmant/app/service/UserService.java`
-- [ ] T032 Update `quickstart.md` with instructions to run the application and test registration.
+- [x] T028 [P] Implement unique login validation in `backend-app/src/main/java/eu/pmant/app/service/UserService.java` and `backend-app/src/main/java/eu.pmant/app/repository/UserRepository.java`
+- [x] T029 [P] Implement error handling for empty login/password fields in `backend-app/src/main/java/eu/pmant/app/dto/RegistrationRequest.java` and `backend-app/src/main/java/eu/pmant/app/controller/RegistrationController.java`
+- [x] T030 [P] Ensure HTTPS with TLS 1.2 or higher is enforced for all registration data transmission (configuration in Nginx and Spring Boot) in `nginx/nginx.conf` and `backend-app/src/main/resources/application.properties`
+- [x] T031 Add logging for registration events in `backend-app/src/main/java/eu/pmant/app/service/UserService.java`
+- [x] T032 Update `quickstart.md` with instructions to run the application and test registration.
 
 ---
 
