@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-users-table
+      author: pmant
+      changes:
+        - sqlFile:
+            path: db.initial.sql
+            relativeToChangelogFile: true
+            encoding: UTF-8
+            stripComments: true
+            splitStatements: true
+            endDelimiter: ;

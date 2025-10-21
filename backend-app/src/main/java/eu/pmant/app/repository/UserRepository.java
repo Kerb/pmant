@@ -1,13 +1,13 @@
 package eu.pmant.app.repository;
 
+import eu.pmant.app.generated.jooq.Tables;
 import eu.pmant.app.model.User;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
-import static eu.pmant.app.jooq.tables.Users.USERS;
+
 
 @Repository
 public class UserRepository {
@@ -19,23 +19,29 @@ public class UserRepository {
     }
 
     public User create(User user) {
-        dslContext.insertInto(USERS)
-                .set(USERS.ID, user.getId())
-                .set(USERS.LOGIN, user.getLogin())
-                .set(USERS.PASSWORD_HASH, user.getPasswordHash())
-                .execute();
+        Long id = dslContext.insertInto(Tables.USERS)
+                .set(Tables.USERS.LOGIN, user.getLogin())
+                .set(Tables.USERS.PASSWORD_HASH, user.getPasswordHash())
+                .returning(Tables.USERS.ID)
+                .fetchOne()
+                .getValue(Tables.USERS.ID);
+        user.setId(id);
         return user;
     }
 
     public Optional<User> findByLogin(String login) {
-        return dslContext.selectFrom(USERS)
-                .where(USERS.LOGIN.eq(login))
+        return dslContext.selectFrom(Tables.USERS)
+                .where(Tables.USERS.LOGIN.eq(login))
                 .fetchOptionalInto(User.class);
     }
 
-    public Optional<User> findById(UUID id) {
-        return dslContext.selectFrom(USERS)
-                .where(USERS.ID.eq(id))
+    public Optional<User> findById(Long id) {
+        return dslContext.selectFrom(Tables.USERS)
+                .where(Tables.USERS.ID.eq(id))
                 .fetchOptionalInto(User.class);
+    }
+
+    public void deleteAll() {
+        dslContext.deleteFrom(Tables.USERS).execute();
     }
 }

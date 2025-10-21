@@ -12,6 +12,11 @@ services:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydatabase"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   frontend-app:
     build:
@@ -20,12 +25,12 @@ services:
     ports:
       - "3000:3000" # React development server port
     volumes:
-      - ./frontend-app:/app
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true # For hot-reloading in Docker
     depends_on:
-      - backend-app # Frontend depends on backend for API calls
+      backend-app:
+        condition: service_started # Frontend depends on backend for API calls
 
   backend-app:
     build:
@@ -33,10 +38,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    volumes:
-      - ./backend-app:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   nginx:
     image: nginx:alpine

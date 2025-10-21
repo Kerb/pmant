@@ -1,13 +1,11 @@
 package eu.pmant.app.dto;
 
-import java.util.UUID;
-
 public class RegistrationResponse {
 
     private String message;
-    private UUID userId;
+    private Long userId;
 
-    public RegistrationResponse(String message, UUID userId) {
+    public RegistrationResponse(String message, Long userId) {
         this.message = message;
         this.userId = userId;
     }
@@ -20,11 +18,11 @@ public class RegistrationResponse {
         this.message = message;
     }
 
-    public UUID getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

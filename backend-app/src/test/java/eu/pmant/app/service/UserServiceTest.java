@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,7 +36,7 @@ class UserServiceTest {
         String login = "testuser";
         String password = "password123";
         String hashedPassword = "hashedPassword123";
-        User newUser = new User(UUID.randomUUID(), login, hashedPassword);
+        User newUser = new User(1L, login, hashedPassword);
 
         when(userRepository.findByLogin(login)).thenReturn(Optional.empty());
         when(passwordUtil.hashPassword(password)).thenReturn(hashedPassword);
@@ -48,13 +47,14 @@ class UserServiceTest {
         assertTrue(result.isPresent());
         assertEquals(login, result.get().getLogin());
         assertEquals(hashedPassword, result.get().getPasswordHash());
+        assertEquals(1L, result.get().getId());
     }
 
     @Test
     void registerUser_loginAlreadyExists() {
         String login = "existinguser";
         String password = "password123";
-        User existingUser = new User(UUID.randomUUID(), login, "someHash");
+        User existingUser = new User(2L, login, "someHash");
 
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(existingUser));
 
@@ -66,7 +66,7 @@ class UserServiceTest {
     @Test
     void findByLogin_userFound() {
         String login = "testuser";
-        User user = new User(UUID.randomUUID(), login, "hashedPassword");
+        User user = new User(3L, login, "hashedPassword");
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
         Optional<User> foundUser = userService.findByLogin(login);

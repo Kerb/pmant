@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version> <!-- Use a recent stable version -->
+        <version>3.5.6</version> <!-- Use a recent stable version -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>eu.pmant</groupId>
@@ -59,19 +59,86 @@
             <version>3.18.6</version> <!-- Use a recent stable version -->
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
+        </dependency>
+        <!-- H2 Database for in-memory testing -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
         <!-- Liquibase dependency -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <!-- PostgreSQL JDBC Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version> <!-- Use the same version as in jooq-codegen-maven plugin -->
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.33.0</version>
+                <configuration>
+                    <url>jdbc:h2:file:./target/h2db/mydatabase;MODE=PostgreSQL</url>
+                    <driver>org.h2.Driver</driver>
+                    <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yml</changeLogFile>
+                    <defaultSchemaName>PUBLIC</defaultSchemaName>
+                    <username>sa</username>
+                    <password>sa123</password>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/jooq</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- jOOQ Codegen Plugin -->
             <plugin>
                 <groupId>org.jooq</groupId>
@@ -79,41 +146,46 @@
                 <version>3.18.6</version> <!-- Use a recent stable version -->
                 <executions>
                     <execution>
+                        <id>jooq-generate</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <phase>generate-sources</phase>
                     </execution>
                 </executions>
                 <configuration>
-                    <skip>true</skip> <!-- Skip jOOQ code generation by default -->
+                    <!-- JDBC-подключение -->
                     <jdbc>
-                        <driver>org.postgresql.Driver</driver>
-                        <url>jdbc:postgresql://localhost:5432/mydatabase</url>
-                        <user>user</user>
-                        <password>password</password>
+                        <driver>org.h2.Driver</driver>
+                        <url>jdbc:h2:file:./target/h2db/mydatabase;MODE=PostgreSQL</url>
+                        <user>sa</user>
+                        <password>sa123</password>
                     </jdbc>
+
                     <generator>
                         <database>
-                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <name>org.jooq.meta.h2.H2Database</name>
+                            <inputSchema>PUBLIC</inputSchema>
                             <includes>.*</includes>
                             <excludes></excludes>
-                            <inputSchema>public</inputSchema>
                         </database>
+
                         <target>
-                            <packageName>eu.pmant.app.jooq</packageName>
+                            <packageName>eu.pmant.app.generated.jooq</packageName>
                             <directory>target/generated-sources/jooq</directory>
                         </target>
                     </generator>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>42.6.0</version> <!-- Use a recent stable version -->
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>2.2.224</version> <!-- или актуальная версия -->
                     </dependency>
                 </dependencies>
             </plugin>
         </plugins>
     </build>
+
 
 </project>

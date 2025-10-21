@@ -1,5 +1,13 @@
+package eu.pmant.app.service;
+
+import eu.pmant.app.model.User;
+import eu.pmant.app.repository.UserRepository;
+import eu.pmant.app.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -21,7 +29,7 @@ public class UserService {
         }
 
         String passwordHash = passwordUtil.hashPassword(password);
-        User newUser = new User(UUID.randomUUID(), login, passwordHash);
+        User newUser = new User(login, passwordHash);
         User createdUser = userRepository.create(newUser);
         logger.info("User registered successfully with ID: {}", createdUser.getId());
         return Optional.of(createdUser);

@@ -32,8 +32,7 @@ class RegistrationControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Clear database before each test if necessary
-        // userRepository.deleteAll(); // Assuming a deleteAll method exists or similar cleanup
+        userRepository.deleteAll(); // Clear database before each test
     }
 
     @Test
@@ -84,7 +83,7 @@ class RegistrationControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Password must be at least 8 characters long"));
+                .andExpect(jsonPath("$.password").value("Password must be at least 8 characters long"));
     }
 
     @Test
@@ -97,7 +96,7 @@ class RegistrationControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Login cannot be empty"));
+                .andExpect(jsonPath("$.login").value("Login cannot be empty"));
     }
 
     @Test
@@ -110,6 +109,6 @@ class RegistrationControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Password must be at least 8 characters long"));
+                .andExpect(jsonPath("$.password").value("Password must be at least 8 characters long"));
     }
 }

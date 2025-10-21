@@ -37,7 +37,7 @@
 - [x] T004 Implement password hashing utility (BCrypt) in `backend-app/src/main/java/eu/pmant/app/util/PasswordUtil.java`
 - [x] T005 Implement UserRepository for database operations using jOOQ in `backend-app/src/main/java/eu/pmant/app/repository/UserRepository.java`
 - [x] T006 Implement UserService for core user registration logic in `backend-app/src/main/java/eu/pmant/app/service/UserService.java`
-- [x] T007 Create initial Liquibase changelog for User table in `backend-app/src/main/resources/db/changelog/db.changelog-master.xml`
+- [x] T007 Create initial Liquibase changelog for User table in `backend-app/src/main/resources/db/changelog/db.changelog-master.yaml`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
