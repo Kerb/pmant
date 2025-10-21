@@ -33,7 +33,7 @@
 
 - [x] T013 [US2] Add "ping" button to `frontend-app/public/index.html`
 - [x] T014 [US2] Implement JavaScript in `frontend-app/public/index.html` to send HTTP request to backend on button click
-- [x] T015 [US2] Implement backend endpoint in `backend-app/src/main/java/com/example/app/controller/PingController.java` to respond to "ping" request
+- [x] T015 [US2] Implement backend endpoint in `backend-app/src/main/java/eu/pmant/app/controller/PingController.java` to respond to "ping" request
 - [x] T016 [US2] Implement frontend display of "Loading..." text in `frontend-app/public/index.html`
 - [x] T017 [US2] Implement frontend display of backend response in `frontend-app/public/index.html`
 - [x] T018 [US2] Implement frontend error display for unreachable backend in `frontend-app/public/index.html`

@@ -8,9 +8,9 @@
         <version>3.2.0</version> <!-- Use a recent stable version -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>eu.pmant</groupId>
     <artifactId>backend-app</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>backend-app</name>
     <description>Demo project for Spring Boot</description>
     <properties>

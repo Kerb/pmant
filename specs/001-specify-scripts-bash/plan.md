@@ -54,7 +54,7 @@ specs/001-specify-scripts-bash/
 ```
 backend-app/
 ├── src/
-│   ├── main/java/com/example/app/ # Spring Boot application
+│   ├── main/java/eu/pmant/app/ # Spring Boot application
 │   └── main/resources/            # Application resources
 └── pom.xml                        # Maven build file
 
