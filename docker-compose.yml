@@ -67,7 +67,7 @@ services:
       - ./certs:/etc/letsencrypt
       - ./webroot:/var/www/certbot
     entrypoint: >
-      sh -c "certbot certonly --webroot -w /var/www/certbot -d pmant.kerba.net --email admin@pmant.kerba.net --agree-tos --non-interactive"
+      sh -c "certbot certonly --standalone -d pmant.kerba.net --email admin@pmant.kerba.net --agree-tos --non-interactive"
     depends_on:
       nginx-prod:
         condition: service_started # Frontend depends on backend for API calls

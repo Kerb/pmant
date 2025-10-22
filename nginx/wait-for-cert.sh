@@ -16,5 +16,7 @@ while [ ! -f "$CERT_DIR/fullchain.pem" ] || [ ! -f "$CERT_DIR/privkey.pem" ]; do
     ELAPSED=$((ELAPSED + INTERVAL))
 done
 
-echo "Сертификат найден, запускаем Nginx..."
+echo "Сертификат найден, финальная задержка $INTERVAL sec..."
+sleep $INTERVAL
+echo "Запускаем nginx..."
 exec nginx -g "daemon off;"
