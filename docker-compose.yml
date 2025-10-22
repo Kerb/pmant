@@ -48,7 +48,7 @@ services:
       - "443:443"
     command: ["sh", "-c", "/usr/local/bin/wait-for-cert.sh"] # ждем скриптом появления файлов серта, которые поставляет certbot
     volumes:
-      - ./docker/nginx/wait-for-cert.sh:/usr/local/bin/wait-for-cert.sh
+      - ./docker/nginx/wait-for-cert.sh:/usr/local/bin/wait-for-cert.sh:ro
       - ./nginx/nginx-prod.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/letsencrypt
       - ./webroot:/var/www/certbot
