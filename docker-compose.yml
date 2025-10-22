@@ -45,6 +45,8 @@ services:
     volumes:
       - ./certs:/etc/letsencrypt
       - ./webroot:/var/www/certbot
+    ports:
+      - "80:80"
     entrypoint: >
       sh -c "certbot certonly --webroot -w /var/www/certbot -d pmant.kerba.net --email admin@pmant.kerba.net --agree-tos --non-interactive"
 
