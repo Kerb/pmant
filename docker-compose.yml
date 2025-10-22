@@ -24,8 +24,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000" # React development server port
-    volumes:
-      - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true # For hot-reloading in Docker
     depends_on:
