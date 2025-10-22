@@ -46,7 +46,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    command: ["/usr/local/bin/wait-for-cert.sh"] # ждем скриптом появления файлов серта, которые поставляет certbot
+    command: ["sh", "/usr/local/bin/wait-for-cert.sh"] # ждем скриптом появления файлов серта, которые поставляет certbot
     volumes:
       - ./docker/nginx/wait-for-cert.sh:/usr/local/bin/wait-for-cert.sh
       - ./nginx/nginx-prod.conf:/etc/nginx/nginx.conf:ro
