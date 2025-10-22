@@ -13,15 +13,42 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       alert("Passwords don't match!");
       return;
     }
-    // TODO: Add registration logic
-    navigate("/");
+
+    try {
+      setLoading(true);
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          login: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+
+      alert("Registration successful!");
+      navigate("/"); // переход на главную или логин
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,7 +77,7 @@ const Register = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+              {/*<div className="space-y-2">
                 <Label htmlFor="fullName">Full Name</Label>
                 <Input
                   id="fullName"
@@ -60,10 +87,10 @@ const Register = () => {
                   onChange={(e) => setFullName(e.target.value)}
                   required
                   className="h-11"
-                />
-              </div>
+        ƒ        />
+              </div>*/}
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email (Login)</Label>
                 <Input
                   id="email"
                   type="email"
@@ -101,8 +128,9 @@ const Register = () => {
               <Button
                 type="submit"
                 className="w-full h-11 text-base font-medium"
+                disabled={loading}
               >
-                Create Account
+                {loading ? "Creating..." : "Create Account"}
               </Button>
             </form>
             <div className="mt-6 text-center text-sm">
