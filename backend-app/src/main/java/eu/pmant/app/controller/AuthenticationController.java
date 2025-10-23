@@ -3,6 +3,7 @@ package eu.pmant.app.controller;
 import eu.pmant.app.dto.LoginRequest;
 import eu.pmant.app.dto.LoginResponse;
 import eu.pmant.app.dto.LogoutResponse;
+import eu.pmant.app.dto.SessionData;
 import eu.pmant.app.model.User;
 import eu.pmant.app.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,16 +60,14 @@ public class AuthenticationController {
 
         // Create session and store user information
         HttpSession session = httpRequest.getSession(true);
-        session.setAttribute("userId", user.getId());
-        session.setAttribute("login", user.getLogin());
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("userId", user.getId());
-        response.put("login", user.getLogin());
-
+        SessionData sessionData = SessionData.builder()
+                .userId(user.getId())
+                .login(user.getLogin())
+                .build();
+        session.setAttribute("sessionData", sessionData);
         return ResponseEntity.ok(LoginResponse.builder().success(true)
                 .success(true)
-                .message(String.format("Logged in ok (userId=%d)", user.getId()))
+                .message(String.format("Logged in ok (userId=%d)", sessionData.getUserId()))
                 .build());
     }
 

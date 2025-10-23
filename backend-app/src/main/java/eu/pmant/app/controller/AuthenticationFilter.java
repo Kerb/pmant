@@ -36,7 +36,7 @@ public class AuthenticationFilter implements Filter {
 
         // For all other paths, check if user is authenticated
         HttpSession session = httpRequest.getSession(false);
-        if (session != null && session.getAttribute("userId") != null) {
+        if (session != null && session.getAttribute("sessionData") != null) {
             // User is authenticated
             filterChain.doFilter(servletRequest, servletResponse);
         } else {

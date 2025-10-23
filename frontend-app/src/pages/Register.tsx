@@ -43,7 +43,7 @@ const Register = () => {
       }
 
       alert("Registration successful!");
-      navigate("/"); // переход на главную или логин
+      navigate("/login"); // переход на главную или логин
     } catch (err: any) {
       alert(err.message);
     } finally {

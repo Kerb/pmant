@@ -14,7 +14,32 @@ const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add authentication logic
+
+    fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        login: email,
+        password: password
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        console.log('Login successful:', data.message);
+        navigate("/");
+      } else {
+        console.error('Login failed:', data.message);
+        // Handle login error (show message to user)
+      }
+    })
+    .catch(error => {
+      console.error('Error during login:', error);
+      // Handle network or other errors
+    });
     navigate("/");
   };
 
