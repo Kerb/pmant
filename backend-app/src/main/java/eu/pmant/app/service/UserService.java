@@ -29,7 +29,7 @@ public class UserService {
         }
 
         String passwordHash = passwordUtil.hashPassword(password);
-        User newUser = new User(login, passwordHash);
+        User newUser = new User(null, login, passwordHash);
         User createdUser = userRepository.create(newUser);
         logger.info("User registered successfully with ID: {}", createdUser.getId());
         return Optional.of(createdUser);

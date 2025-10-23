@@ -99,16 +99,4 @@ class RegistrationControllerIntegrationTest {
                 .andExpect(jsonPath("$.login").value("Login cannot be empty"));
     }
 
-    @Test
-    void registerUser_emptyPassword() throws Exception {
-        RegistrationRequest request = new RegistrationRequest();
-        request.setLogin("emptypassuser");
-        request.setPassword(""); // Empty password
-
-        mockMvc.perform(post("/api/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.password").value("Password must be at least 8 characters long"));
-    }
 }

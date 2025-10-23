@@ -5,6 +5,7 @@ import eu.pmant.app.dto.RegistrationResponse;
 import eu.pmant.app.model.User;
 import eu.pmant.app.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,16 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class RegistrationController {
 
     private final UserService userService;
-
-    public RegistrationController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest request) {
@@ -43,7 +42,7 @@ public class RegistrationController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, String> errors = new TreeMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();

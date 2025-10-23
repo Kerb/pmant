@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-
-
 @Repository
 public class UserRepository {
 
@@ -19,14 +17,13 @@ public class UserRepository {
     }
 
     public User create(User user) {
-        Long id = dslContext.insertInto(Tables.USERS)
+        Long createdUserId = dslContext.insertInto(Tables.USERS)
                 .set(Tables.USERS.LOGIN, user.getLogin())
                 .set(Tables.USERS.PASSWORD_HASH, user.getPasswordHash())
                 .returning(Tables.USERS.ID)
                 .fetchOne()
                 .getValue(Tables.USERS.ID);
-        user.setId(id);
-        return user;
+        return user.toBuilder().id(createdUserId).build();
     }
 
     public Optional<User> findByLogin(String login) {
