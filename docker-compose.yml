@@ -64,7 +64,7 @@ services:
 
   certbot:
     image: certbot/certbot
-    profiles: [ "prod" ]
+    profiles: [ "get-certs" ] # только для получения сертов
     ports:
       - "80:80"
     volumes:
