@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LoginResponse {
+public class LoginResponse implements ApiResponse {
     private boolean success;
 
     private String message;
