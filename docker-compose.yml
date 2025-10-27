@@ -63,6 +63,8 @@ services:
   certbot:
     image: certbot/certbot
     profiles: [ "prod" ]
+    ports:
+      - "80:80"
     volumes:
       - ./certs:/etc/letsencrypt
       - ./webroot:/var/www/certbot
