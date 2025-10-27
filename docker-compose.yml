@@ -69,7 +69,7 @@ services:
       - ./certs:/etc/letsencrypt
       - ./webroot:/var/www/certbot
     entrypoint: >
-      sh -c "certbot certonly --standalone -d pmant.kerba.net --email admin@pmant.kerba.net --agree-tos --non-interactive"
+      sh -c "certbot certonly --standalone -d pmant.eu --email admin@pmant.eu --agree-tos --non-interactive"
 
 volumes:
   db_data:
