@@ -9,12 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, Settings, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface TopNavProps {
   title?: string;
 }
 
 export function TopNav({ title = "Dashboard" }: TopNavProps) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/logout');
+  };
+
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
@@ -50,7 +57,7 @@ export function TopNav({ title = "Dashboard" }: TopNavProps) {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
+            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>

@@ -40,13 +40,25 @@ public class AuthenticationController {
         Optional<User> userOptional = userService.findByLogin(request.getLogin());
 
         if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(
+                            LoginResponse.builder()
+                                    .success(false)
+                                    .message("Invalid credentials")
+                                    .build()
+                    );
         }
 
         User user = userOptional.get();
         if (!userService.checkPassword(request.getPassword(), user.getPasswordHash())) {
             log.info("Password is wrong");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(
+                            LoginResponse.builder()
+                                    .success(false)
+                                    .message("Invalid credentials")
+                                    .build()
+                    );
         }
 
         if (httpRequest.getSession(false) != null) {

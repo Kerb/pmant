@@ -11,9 +11,11 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // Сброс предыдущей ошибки
 
     fetch('/api/login', {
       method: 'POST',
@@ -32,15 +34,16 @@ const Login = () => {
         console.log('Login successful:', data.message);
         navigate("/");
       } else {
-        console.error('Login failed:', data.message);
-        // Handle login error (show message to user)
+        // Отображаем сообщение об ошибке от сервера или стандартное
+        setError(data.message || "Invalid email or password");
+        console.log('Error during login:');
       }
     })
     .catch(error => {
-      console.error('Error during login:', error);
-      // Handle network or other errors
+      // Отображаем общее сообщение об ошибке
+      setError("An error occurred during login. Please try again.");
+      console.log('Error during login:');
     });
-    navigate("/");
   };
 
   return (
@@ -93,6 +96,11 @@ const Login = () => {
                   className="h-11"
                 />
               </div>
+              {error && (
+                <div className="text-red-500 text-sm text-center py-2">
+                  {error}
+                </div>
+              )}
               <Button
                 type="submit"
                 className="w-full h-11 text-base font-medium"
