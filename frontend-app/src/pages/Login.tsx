@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,12 +47,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
-      >
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-2 text-primary">
             <Sparkles className="w-8 h-8" />
@@ -121,7 +114,6 @@ const Login = () => {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
     </div>
   );
 };

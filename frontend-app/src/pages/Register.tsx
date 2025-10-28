@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,12 +52,6 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
-      >
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-2 text-primary">
             <Sparkles className="w-8 h-8" />
@@ -77,18 +70,6 @@ const Register = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/*<div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="John Doe"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                  className="h-11"
-        ƒ        />
-              </div>*/}
               <div className="space-y-2">
                 <Label htmlFor="email">Email (Login)</Label>
                 <Input
@@ -146,7 +127,6 @@ const Register = () => {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
     </div>
   );
 };
