@@ -18,7 +18,5 @@ public class Recording {
     @Nonnull
     private String duration;
     @Nonnull
-    private Integer participants;
-    @Nonnull
     private String status;
 }

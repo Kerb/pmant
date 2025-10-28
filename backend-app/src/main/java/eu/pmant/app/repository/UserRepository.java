@@ -1,44 +1,43 @@
 package eu.pmant.app.repository;
 
 import eu.pmant.app.generated.jooq.Tables;
-import eu.pmant.app.model.User;
+import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
+import eu.pmant.app.generated.jooq.tables.records.UserAccountRecord;
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Repository
 public class UserRepository {
 
     private final DSLContext dslContext;
 
-    public UserRepository(DSLContext dslContext) {
-        this.dslContext = dslContext;
+    @Transactional
+    public UserAccount create(UserAccount userAccount) {
+        UserAccountRecord record = dslContext.insertInto(Tables.USER_ACCOUNT)
+            .set(Tables.USER_ACCOUNT.LOGIN, userAccount.getLogin())
+            .set(Tables.USER_ACCOUNT.PASSWORD_HASH, userAccount.getPasswordHash())
+            .returning(Tables.USER_ACCOUNT.ID)
+            .fetchOne();
+
+        if (record != null) {
+            userAccount.setId(record.getValue(Tables.USER_ACCOUNT.ID));
+        } else {
+            throw new RuntimeException("Failed to create userAccount");
+        }
+        return userAccount;
     }
 
-    public User create(User user) {
-        Long createdUserId = dslContext.insertInto(Tables.USERS)
-                .set(Tables.USERS.LOGIN, user.getLogin())
-                .set(Tables.USERS.PASSWORD_HASH, user.getPasswordHash())
-                .returning(Tables.USERS.ID)
-                .fetchOne()
-                .getValue(Tables.USERS.ID);
-        return user.toBuilder().id(createdUserId).build();
+    public Optional<UserAccount> findByLogin(String login) {
+        return dslContext.selectFrom(Tables.USER_ACCOUNT)
+                .where(Tables.USER_ACCOUNT.LOGIN.eq(login))
+                .fetchOptionalInto(UserAccount.class);
     }
-
-    public Optional<User> findByLogin(String login) {
-        return dslContext.selectFrom(Tables.USERS)
-                .where(Tables.USERS.LOGIN.eq(login))
-                .fetchOptionalInto(User.class);
-    }
-
-    public Optional<User> findById(Long id) {
-        return dslContext.selectFrom(Tables.USERS)
-                .where(Tables.USERS.ID.eq(id))
-                .fetchOptionalInto(User.class);
-    }
-
     public void deleteAll() {
-        dslContext.deleteFrom(Tables.USERS).execute();
+        dslContext.deleteFrom(Tables.USER_ACCOUNT).execute();
     }
 }

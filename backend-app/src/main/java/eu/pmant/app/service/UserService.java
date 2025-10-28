@@ -1,6 +1,6 @@
 package eu.pmant.app.service;
 
-import eu.pmant.app.model.User;
+import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.repository.UserRepository;
 import eu.pmant.app.util.PasswordUtil;
 import org.slf4j.Logger;
@@ -22,20 +22,20 @@ public class UserService {
         this.passwordUtil = passwordUtil;
     }
 
-    public Optional<User> registerUser(String login, String password) {
+    public Optional<UserAccount> registerUser(String login, String password) {
         if (userRepository.findByLogin(login).isPresent()) {
             logger.warn("Registration attempt with existing login: {}", login);
             return Optional.empty(); // User with this login already exists
         }
 
         String passwordHash = passwordUtil.hashPassword(password);
-        User newUser = new User(null, login, passwordHash);
-        User createdUser = userRepository.create(newUser);
+        UserAccount newUser = new UserAccount(null, login, passwordHash);
+        UserAccount createdUser = userRepository.create(newUser);
         logger.info("User registered successfully with ID: {}", createdUser.getId());
         return Optional.of(createdUser);
     }
 
-    public Optional<User> findByLogin(String login) {
+    public Optional<UserAccount> findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 

@@ -1,6 +1,6 @@
 package eu.pmant.app.service;
 
-import eu.pmant.app.model.User;
+import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.repository.UserRepository;
 import eu.pmant.app.util.PasswordUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,13 +36,13 @@ class UserServiceTest {
         String login = "testuser";
         String password = "password123";
         String hashedPassword = "hashedPassword123";
-        User newUser = new User(1L, login, hashedPassword);
+        UserAccount newUser = new UserAccount(1L, login, hashedPassword);
 
         when(userRepository.findByLogin(login)).thenReturn(Optional.empty());
         when(passwordUtil.hashPassword(password)).thenReturn(hashedPassword);
-        when(userRepository.create(any(User.class))).thenReturn(newUser);
+        when(userRepository.create(any(UserAccount.class))).thenReturn(newUser);
 
-        Optional<User> result = userService.registerUser(login, password);
+        Optional<UserAccount> result = userService.registerUser(login, password);
 
         assertTrue(result.isPresent());
         assertEquals(login, result.get().getLogin());
@@ -54,11 +54,11 @@ class UserServiceTest {
     void registerUser_loginAlreadyExists() {
         String login = "existinguser";
         String password = "password123";
-        User existingUser = new User(2L, login, "someHash");
+        UserAccount existingUser = new UserAccount(2L, login, "someHash");
 
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(existingUser));
 
-        Optional<User> result = userService.registerUser(login, password);
+        Optional<UserAccount> result = userService.registerUser(login, password);
 
         assertFalse(result.isPresent());
     }
@@ -66,10 +66,10 @@ class UserServiceTest {
     @Test
     void findByLogin_userFound() {
         String login = "testuser";
-        User user = new User(3L, login, "hashedPassword");
+        UserAccount user = new UserAccount(3L, login, "hashedPassword");
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
-        Optional<User> foundUser = userService.findByLogin(login);
+        Optional<UserAccount> foundUser = userService.findByLogin(login);
 
         assertTrue(foundUser.isPresent());
         assertEquals(login, foundUser.get().getLogin());
@@ -80,7 +80,7 @@ class UserServiceTest {
         String login = "nonexistent";
         when(userRepository.findByLogin(login)).thenReturn(Optional.empty());
 
-        Optional<User> foundUser = userService.findByLogin(login);
+        Optional<UserAccount> foundUser = userService.findByLogin(login);
 
         assertFalse(foundUser.isPresent());
     }

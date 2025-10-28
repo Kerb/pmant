@@ -2,7 +2,7 @@ package eu.pmant.app.controller;
 
 import eu.pmant.app.dto.RegistrationRequest;
 import eu.pmant.app.dto.RegistrationResponse;
-import eu.pmant.app.model.User;
+import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest request) {
-        Optional<User> registeredUser = userService.registerUser(request.getLogin(), request.getPassword());
+        Optional<UserAccount> registeredUser = userService.registerUser(request.getLogin(), request.getPassword());
 
         if (registeredUser.isPresent()) {
             return ResponseEntity.ok(new RegistrationResponse("User registered successfully.", registeredUser.get().getId()));

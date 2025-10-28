@@ -109,7 +109,7 @@
                 <configuration>
                     <url>jdbc:h2:file:./target/h2db/mydatabase;MODE=PostgreSQL</url>
                     <driver>org.h2.Driver</driver>
-                    <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
+                    <changeLogFile>src/main/resources/db/changelog/db.initial.sql</changeLogFile>
                     <defaultSchemaName>PUBLIC</defaultSchemaName>
                     <username>sa</username>
                     <password>sa123</password>
@@ -168,6 +168,10 @@
                     </jdbc>
 
                     <generator>
+                        <generate>
+                            <pojos>true</pojos>
+                        </generate>
+
                         <database>
                             <name>org.jooq.meta.h2.H2Database</name>
                             <inputSchema>PUBLIC</inputSchema>

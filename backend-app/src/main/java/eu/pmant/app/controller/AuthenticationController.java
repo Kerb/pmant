@@ -4,7 +4,7 @@ import eu.pmant.app.dto.LoginRequest;
 import eu.pmant.app.dto.LoginResponse;
 import eu.pmant.app.dto.LogoutResponse;
 import eu.pmant.app.dto.SessionData;
-import eu.pmant.app.model.User;
+import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,7 +37,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        Optional<User> userOptional = userService.findByLogin(request.getLogin());
+        Optional<UserAccount> userOptional = userService.findByLogin(request.getLogin());
 
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -49,7 +49,7 @@ public class AuthenticationController {
                     );
         }
 
-        User user = userOptional.get();
+        UserAccount user = userOptional.get();
         if (!userService.checkPassword(request.getPassword(), user.getPasswordHash())) {
             log.info("Password is wrong");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
