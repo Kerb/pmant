@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Mic, Upload, Calendar, CheckSquare, Clock, ChevronRight } from "lucide-react";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import AudioImport from "@/pages/AudioImport";
+
 
 const Dashboard = () => {
 
@@ -118,72 +120,23 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <Card className="p-6 hover:shadow-lg transition-all cursor-pointer border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Mic className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-1">Record Meeting</h3>
-                <p className="text-sm text-muted-foreground mb-3">Start live recording or upload audio</p>
-                <Button className="w-full sm:w-auto">
-                  Start Recording
-                </Button>
-              </div>
-            </div>
-          </Card>
+          {/*<Card className="p-6 hover:shadow-lg transition-all cursor-pointer border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">*/}
+          {/*  <div className="flex items-start gap-4">*/}
+          {/*    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">*/}
+          {/*      <Mic className="w-6 h-6 text-primary" />*/}
+          {/*    </div>*/}
+          {/*    <div className="flex-1">*/}
+          {/*      <h3 className="text-lg font-semibold mb-1">Record Meeting</h3>*/}
+          {/*      <p className="text-sm text-muted-foreground mb-3">Start live recording or upload audio</p>*/}
+          {/*      <Button className="w-full sm:w-auto">*/}
+          {/*        Start Recording*/}
+          {/*      </Button>*/}
+          {/*    </div>*/}
+          {/*  </div>*/}
+          {/*</Card>*/}
 
           <Card className="p-6 hover:shadow-lg transition-all cursor-pointer border-2 border-border">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
-                <Upload className="w-6 h-6 text-foreground" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-1">Import Audio</h3>
-                <p className="text-sm text-muted-foreground mb-3">Upload from files or voice memos</p>
-                <input 
-                  type="file" 
-                  id="audio-upload" 
-                  className="hidden" 
-                  accept="audio/*" 
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const formData = new FormData();
-                      formData.append('file', file);
-
-                      fetch('/api/createRecording', {
-                        method: 'POST',
-                        body: formData,
-                        credentials: 'include'
-                      })
-                          .then(response => response.json())
-                          .then(data => {
-                            if (data.success) {
-                              console.log('Success:', data);
-                              loadRecordings();
-                            } else {
-                              console.log('Error white uploading file:', data);
-                            }
-                          })
-                          .catch(error => {
-                            console.error('Error:', error);
-                          })
-                          .finally(() => {
-                            // Сброс значения инпута, чтобы можно было выбрать тот же файл снова
-                            e.target.value = '';
-                          });;
-                    }
-                  }}
-                />
-                <Button 
-                  variant="outline" 
-                  className="w-full sm:w-auto"
-                  onClick={() => document.getElementById('audio-upload')?.click()}>
-                  Choose File
-                </Button>
-              </div>
-            </div>
+            <AudioImport loadRecordings={loadRecordings} />
           </Card>
         </div>
 
