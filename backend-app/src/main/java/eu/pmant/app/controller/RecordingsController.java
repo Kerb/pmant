@@ -36,8 +36,14 @@ public class RecordingsController {
     @PostMapping("/createRecording")
     public ResponseEntity<RecordingCreateResponse> createRecording(@RequestParam("file") MultipartFile file) {
         try {
+            Long userId = sessionDataProvider.getSessionData().getUserId();
+
+            // todo вынести в параметры
+            long maxSize = 20 * 1024 * 1024;
+            if (file.getSize() > maxSize) {
+                throw new RuntimeException("File too large");
+            }
             // todo проверить тип файла
-            // todo проверить размер файла
 
             // Generate temporary file name
             String originalFilename = file.getOriginalFilename();
@@ -45,18 +51,19 @@ public class RecordingsController {
             if (originalFilename != null && originalFilename.contains(".")) {
                 extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             }
-            String tempFileName = UUID.randomUUID().toString() + extension;
+            String tempFileName = String.format("%d/%s_%s.%s", userId, LocalDateTime.now(), UUID.randomUUID(), extension);
 
             // Save file locally in /tmp directory
-            Path filePath = Paths.get("/tmp", tempFileName);
+            Path filePath = Paths.get("/var/recordings", tempFileName);
             Files.createDirectories(filePath.getParent());
             file.transferTo(filePath);
+            log.info("File saved to {}", filePath.toFile().getAbsolutePath());
 
             // TODO: Save file path to database
             // Example: recordingRepository.saveFilePath(sessionDataProvider.getSessionData().getUserId(), filePath.toString());
 
             UserMeetings userMeetings = new UserMeetings();
-            userMeetings.setUserId(sessionDataProvider.getSessionData().getUserId());
+            userMeetings.setUserId(userId);
             userMeetings.setFileName(originalFilename);
             userMeetings.setFilePath(filePath.toString());
             userMeetings.setDuration(0L); //todo реализовать

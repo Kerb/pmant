@@ -34,6 +34,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    volumes:
+      - recordings_store:/var/recordings
     depends_on:
       db:
         condition: service_healthy
@@ -73,4 +75,5 @@ services:
       sh -c "certbot certonly --standalone -d pmant.eu --email admin@pmant.eu --agree-tos --non-interactive"
 
 volumes:
+  recordings_store:
   db_data:
