@@ -153,7 +153,9 @@ const Dashboard = () => {
             </div>
             <div className="space-y-3">
               {todaysMeetings.map((meeting) => (
-                <div key={meeting.id} className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer">
+                <div key={meeting.id}
+                     onClick={() => navigate(`/recording/${meeting.id}`)}
+                     className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-medium text-sm">{meeting.title}</span>
                     {meeting.status === "transcribing" && (

@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Login from "@/pages/Login.tsx";
 import Logout from "@/pages/Logout.tsx";
 import Register from "@/pages/Register.tsx";
+import RecordingDetails from "@/pages/RecordingDetails.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/recording/:id" element={<RecordingDetails />} />
           <Route path="/not-found" element={<NotFound />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
