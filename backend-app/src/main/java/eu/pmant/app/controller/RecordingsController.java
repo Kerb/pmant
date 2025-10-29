@@ -2,6 +2,7 @@ package eu.pmant.app.controller;
 
 import eu.pmant.app.dto.Recording;
 import eu.pmant.app.dto.RecordingCreateResponse;
+import eu.pmant.app.dto.RecordingDetailsResponse;
 import eu.pmant.app.dto.RecordingsResponse;
 import eu.pmant.app.generated.jooq.tables.pojos.UserMeetings;
 import eu.pmant.app.repository.MeetingsRepository;
@@ -67,7 +68,7 @@ public class RecordingsController {
             userMeetings.setFileName(originalFilename);
             userMeetings.setFilePath(filePath.toString());
             userMeetings.setDuration(0L); //todo реализовать
-            userMeetings.setTitle("Meeting record");
+            userMeetings.setTitle(file.getOriginalFilename());
             userMeetings.setStatus("Created");
             userMeetings.setUploadDate(LocalDateTime.now());
 
@@ -114,4 +115,28 @@ public class RecordingsController {
             .recordings(recordings).build();
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/recording-details/{id}")
+    public ResponseEntity<RecordingDetailsResponse> recordingDetails(@PathVariable("id") Long id) {
+        Long userId = sessionDataProvider.getSessionData().getUserId();
+        UserMeetings foundMeeting = meetingsRepository.findMeetingByIdAndUserId(id, userId);
+
+        if (foundMeeting == null) {
+            log.info("Не нашли запись с id: {}", id);
+            return ResponseEntity
+                .ok(
+                    RecordingDetailsResponse.builder()
+                        .success(false)
+                        .build()
+                );
+        }
+        log.info("Нашли запись с id: {}", id);
+        return ResponseEntity.ok(
+            RecordingDetailsResponse.builder()
+                .success(true)
+                .meetingDetails(foundMeeting)
+                .build()
+        );
+    }
+
 }

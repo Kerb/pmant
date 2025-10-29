@@ -42,4 +42,11 @@ public class MeetingsRepository {
             .where(Tables.USER_MEETINGS.USER_ID.eq(userId))
             .fetchInto(UserMeetings.class);
     }
+
+    public UserMeetings findMeetingByIdAndUserId(Long id, Long userId) {
+        return dslContext.selectFrom(Tables.USER_MEETINGS)
+            .where(Tables.USER_MEETINGS.RECORDING_ID.eq(id))
+            .and(Tables.USER_MEETINGS.USER_ID.eq(userId))
+            .fetchOneInto(UserMeetings.class);
+    }
 }
