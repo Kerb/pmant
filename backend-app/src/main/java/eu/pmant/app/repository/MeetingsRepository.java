@@ -37,6 +37,15 @@ public class MeetingsRepository {
         return userMeetings;
     }
 
+    @Transactional
+    public UserMeetings updateSpeech(UserMeetings userMeetings) {
+        dslContext.update(Tables.USER_MEETINGS)
+            .set(Tables.USER_MEETINGS.SPEECH, userMeetings.getSpeech())
+            .where(Tables.USER_MEETINGS.RECORDING_ID.eq(userMeetings.getRecordingId()))
+            .execute();
+        return userMeetings;
+    }
+
     public List<UserMeetings> findMeetingsByUserId(Long userId) {
         return dslContext.selectFrom(Tables.USER_MEETINGS)
             .where(Tables.USER_MEETINGS.USER_ID.eq(userId))

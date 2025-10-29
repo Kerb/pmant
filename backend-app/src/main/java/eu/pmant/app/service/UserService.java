@@ -3,16 +3,14 @@ package eu.pmant.app.service;
 import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.repository.UserRepository;
 import eu.pmant.app.util.PasswordUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final PasswordUtil passwordUtil;
@@ -24,14 +22,14 @@ public class UserService {
 
     public Optional<UserAccount> registerUser(String login, String password) {
         if (userRepository.findByLogin(login).isPresent()) {
-            logger.warn("Registration attempt with existing login: {}", login);
+            log.warn("Registration attempt with existing login: {}", login);
             return Optional.empty(); // User with this login already exists
         }
 
         String passwordHash = passwordUtil.hashPassword(password);
         UserAccount newUser = new UserAccount(null, login, passwordHash);
         UserAccount createdUser = userRepository.create(newUser);
-        logger.info("User registered successfully with ID: {}", createdUser.getId());
+        log.info("User registered successfully with ID: {}", createdUser.getId());
         return Optional.of(createdUser);
     }
 

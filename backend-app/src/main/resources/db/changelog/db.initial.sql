@@ -28,6 +28,7 @@ CREATE TABLE user_meetings
     file_name    VARCHAR(255) NOT NULL,
     file_path    VARCHAR(255) NOT NULL,
     duration     BIGINT       NOT NULL,
+    speech       VARCHAR,
     upload_date  TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user_account (id)
 );

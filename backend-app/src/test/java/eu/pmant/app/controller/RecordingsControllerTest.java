@@ -8,6 +8,7 @@ import eu.pmant.app.dto.RecordingsResponse;
 import eu.pmant.app.dto.SessionData;
 import eu.pmant.app.generated.jooq.tables.pojos.UserMeetings;
 import eu.pmant.app.repository.MeetingsRepository;
+import eu.pmant.app.service.SpeechRecognizeService;
 import eu.pmant.app.session.SessionDataProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ class RecordingsControllerTest {
     private RecordingsController recordingsController;
     private SessionDataProvider sessionDataProvider;
     private MeetingsRepository meetingsRepository;
+    private SpeechRecognizeService speechRecognizeService;
 
     @BeforeEach
     void setUp() {
@@ -34,6 +36,9 @@ class RecordingsControllerTest {
 
         meetingsRepository = Mockito.mock(MeetingsRepository.class);
 
+        speechRecognizeService = Mockito.mock(SpeechRecognizeService.class);
+        Mockito.doReturn("speech").when(speechRecognizeService).recognizeSpeech(ArgumentMatchers.anyString());
+
         UserMeetings userMeetings = new UserMeetings(
             1L,
             1L,
@@ -42,12 +47,13 @@ class RecordingsControllerTest {
             "FileName.ogg",
             "Path",
             45L,
+            "speech",
             LocalDateTime.parse("2024-12-01T10:10:10"));
         doReturn(List.of(userMeetings))
             .when(meetingsRepository)
             .findMeetingsByUserId(ArgumentMatchers.any());
 
-        recordingsController = new RecordingsController(meetingsRepository, sessionDataProvider);
+        recordingsController = new RecordingsController(meetingsRepository, sessionDataProvider, speechRecognizeService);
     }
 
     @Test

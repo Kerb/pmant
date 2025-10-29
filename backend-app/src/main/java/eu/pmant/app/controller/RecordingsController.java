@@ -6,6 +6,7 @@ import eu.pmant.app.dto.RecordingDetailsResponse;
 import eu.pmant.app.dto.RecordingsResponse;
 import eu.pmant.app.generated.jooq.tables.pojos.UserMeetings;
 import eu.pmant.app.repository.MeetingsRepository;
+import eu.pmant.app.service.SpeechRecognizeService;
 import eu.pmant.app.session.SessionDataProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class RecordingsController {
 
     private final MeetingsRepository meetingsRepository;
     private final SessionDataProvider sessionDataProvider;
+    private final SpeechRecognizeService speechRecognizeService;
 
     @PostMapping("/createRecording")
     public ResponseEntity<RecordingCreateResponse> createRecording(@RequestParam("file") MultipartFile file) {
@@ -60,9 +62,6 @@ public class RecordingsController {
             file.transferTo(filePath);
             log.info("File saved to {}", filePath.toFile().getAbsolutePath());
 
-            // TODO: Save file path to database
-            // Example: recordingRepository.saveFilePath(sessionDataProvider.getSessionData().getUserId(), filePath.toString());
-
             UserMeetings userMeetings = new UserMeetings();
             userMeetings.setUserId(userId);
             userMeetings.setFileName(originalFilename);
@@ -73,6 +72,11 @@ public class RecordingsController {
             userMeetings.setUploadDate(LocalDateTime.now());
 
             UserMeetings savedUserMeeting = meetingsRepository.create(userMeetings);
+            userMeetings.setSpeech(speechRecognizeService.recognizeSpeech(filePath.toString()));
+            log.info("Распознали текст: {}", userMeetings.getSpeech());
+
+            meetingsRepository.updateSpeech(userMeetings);
+            log.info("Обновили текст в БД для записи {}", userMeetings.getRecordingId());
 
             return ResponseEntity.ok(
                 RecordingCreateResponse.builder()

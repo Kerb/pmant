@@ -129,7 +129,7 @@ const RecordingDetails = () => {
                             <CardContent>
                                 <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
                                   <pre className="whitespace-pre-wrap font-sans text-sm">
-                                    {recording.transcript}
+                                    {recording.speech}
                                   </pre>
                                 </div>
                             </CardContent>
