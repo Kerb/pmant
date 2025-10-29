@@ -6,6 +6,7 @@ import eu.pmant.app.dto.LogoutResponse;
 import eu.pmant.app.dto.SessionData;
 import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.service.UserService;
+import eu.pmant.app.session.SessionDataProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +35,7 @@ import java.util.TreeMap;
 public class AuthenticationController {
 
     private final UserService userService;
+    private final SessionDataProvider sessionDataProvider;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
@@ -61,7 +63,7 @@ public class AuthenticationController {
                     );
         }
 
-        if (httpRequest.getSession(false) != null) {
+        if (sessionDataProvider.hasActiveSession()) {
             return ResponseEntity.internalServerError()
                     .body(LoginResponse.builder()
                             .success(false)
@@ -70,8 +72,7 @@ public class AuthenticationController {
                     );
         }
 
-        // Create session and store user information
-        HttpSession session = httpRequest.getSession(true);
+        HttpSession session = sessionDataProvider.createSession(httpRequest);
         SessionData sessionData = SessionData.builder()
                 .userId(user.getId())
                 .login(user.getLogin())

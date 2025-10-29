@@ -4,6 +4,8 @@ import eu.pmant.app.dto.RegistrationRequest;
 import eu.pmant.app.dto.RegistrationResponse;
 import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.service.UserService;
+import eu.pmant.app.session.SessionDataProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,12 +29,15 @@ import java.util.TreeMap;
 public class RegistrationController {
 
     private final UserService userService;
+    private final SessionDataProvider sessionDataProvider;
+
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest request) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest request, HttpServletRequest httpServletRequest) {
         Optional<UserAccount> registeredUser = userService.registerUser(request.getLogin(), request.getPassword());
 
         if (registeredUser.isPresent()) {
+            sessionDataProvider.createSession(httpServletRequest);
             return ResponseEntity.ok(new RegistrationResponse("User registered successfully.", registeredUser.get().getId()));
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new RegistrationResponse("Login already exists.", null));

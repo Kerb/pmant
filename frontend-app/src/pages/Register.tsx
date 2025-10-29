@@ -41,25 +41,24 @@ const Register = () => {
         throw new Error(data.error || "Registration failed");
       }
 
-      alert("Registration successful!");
-      navigate("/login"); // переход на главную или логин
-    } catch (err: any) {
-      alert(err.message);
+      navigate("/dashboard"); // переход на главную
+    } catch (err) {
+      console.log('Error while logging in', err)
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4">
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2 text-primary">
-            <Sparkles className="w-8 h-8" />
-            <span className="text-2xl font-bold">Pmant</span>
-          </div>
+    <div className="min-h-screen bg-gradient-subtle flex flex-col items-center justify-center p-4 space-y-8">
+      {/* ЛОГОТИП НАД ФОРМОЙ */}
+        <div className="flex items-center gap-2 text-primary">
+          <Sparkles className="w-8 h-8" />
+          <span className="text-2xl font-bold">Pmant</span>
         </div>
 
-        <Card className="rounded-2xl shadow-lg border-0">
+      {/* КАРТОЧКА С ФОРМОЙ */}
+        <Card className="rounded-2xl shadow-lg border-0 w-full max-w-md">
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-2xl font-bold text-center">
               Create your account 🚀
