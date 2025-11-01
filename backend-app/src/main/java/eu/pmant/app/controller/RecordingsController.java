@@ -42,7 +42,7 @@ public class RecordingsController {
             Long userId = sessionDataProvider.getSessionData().getUserId();
 
             // todo вынести в параметры
-            long maxSize = 20 * 1024 * 1024;
+            long maxSize = 50 * 1024 * 1024;
             if (file.getSize() > maxSize) {
                 throw new RuntimeException("File too large");
             }

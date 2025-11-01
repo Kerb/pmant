@@ -1,6 +1,7 @@
 import React, {useState, useRef} from 'react';
 import {Button} from '@/components/ui/button';
-import {Upload, Mic, StopCircle} from 'lucide-react';
+import {Upload, Mic, StopCircle, CheckCircle, AlertCircle} from 'lucide-react';
+import {Progress} from '@/components/ui/progress';
 
 export default function AudioImport({loadRecordings}: { loadRecordings: () => void }) {
     const [isRecording, setIsRecording] = useState(false);
@@ -8,6 +9,9 @@ export default function AudioImport({loadRecordings}: { loadRecordings: () => vo
     const [stream, setStream] = useState<MediaStream | null>(null); // 👈 Храним активный поток
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
     const [mimeType, setMimeType] = useState<string>('audio/webm');
+    const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+    const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+    const [uploadMessage, setUploadMessage] = useState<string>('');
     const chunks = useRef<Blob[]>([]);
 
     // 📤 Upload existing audio file
@@ -15,23 +19,60 @@ export default function AudioImport({loadRecordings}: { loadRecordings: () => vo
         const file = e.target.files?.[0];
         if (!file) return;
 
+        setUploadProgress(0);
+        setUploadStatus('uploading');
+        setUploadMessage('Uploading file...');
+
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            const res = await fetch('/api/createRecording', {
-                method: 'POST',
-                body: formData,
-                credentials: 'include'
+            // Create a custom fetch with progress tracking
+            const request = new XMLHttpRequest();
+            
+            request.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const progress = Math.round((e.loaded / e.total) * 100);
+                    setUploadProgress(progress);
+                }
             });
-            const data = await res.json();
-            if (data.success) {
-                console.log('✅ Uploaded:', data);
-                loadRecordings();
-            } else {
-                console.error('❌ Upload error:', data);
-            }
+
+            request.addEventListener('load', async () => {
+                if (request.status >= 200 && request.status < 300) {
+                    const data = JSON.parse(request.responseText);
+                    if (data.success) {
+                        setUploadProgress(100);
+                        setUploadStatus('success');
+                        setUploadMessage('File uploaded successfully!');
+                        console.log('✅ Uploaded:', data);
+                        loadRecordings();
+                        
+                        // Reset status after 3 seconds
+                        setTimeout(() => {
+                            setUploadStatus('idle');
+                            setUploadMessage('');
+                        }, 3000);
+                    } else {
+                        setUploadStatus('error');
+                        setUploadMessage('Upload failed: ' + (data.message || 'Unknown error'));
+                    }
+                } else {
+                    setUploadStatus('error');
+                    setUploadMessage('Upload failed: Server error');
+                }
+            });
+
+            request.addEventListener('error', () => {
+                setUploadStatus('error');
+                setUploadMessage('Upload failed: Network error');
+            });
+
+            request.open('POST', '/api/createRecording');
+            request.withCredentials = true;
+            request.send(formData);
         } catch (err) {
+            setUploadStatus('error');
+            setUploadMessage('Upload failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
             console.error('⚠️ Upload failed:', err);
         } finally {
             e.target.value = '';
@@ -66,24 +107,61 @@ export default function AudioImport({loadRecordings}: { loadRecordings: () => vo
                 setAudioUrl(url);
 
                 // 📤 Отправляем запись на сервер
+                setUploadProgress(0);
+                setUploadStatus('uploading');
+                setUploadMessage('Uploading recording...');
+
                 const formData = new FormData();
                 const ext = preferredMimeType.includes('mp4') ? 'm4a' : 'webm';
                 formData.append('file', blob, `recording.${ext}`);
 
                 try {
-                    const res = await fetch('/api/createRecording', {
-                        method: 'POST',
-                        body: formData,
-                        credentials: 'include'
+                    // Create a custom fetch with progress tracking
+                    const request = new XMLHttpRequest();
+                    
+                    request.upload.addEventListener('progress', (e) => {
+                        if (e.lengthComputable) {
+                            const progress = Math.round((e.loaded / e.total) * 100);
+                            setUploadProgress(progress);
+                        }
                     });
-                    const data = await res.json();
-                    if (data.success) {
-                        console.log('✅ Recorded & uploaded:', data);
-                        loadRecordings();
-                    } else {
-                        console.error('❌ Error uploading recording:', data);
-                    }
+
+                    request.addEventListener('load', async () => {
+                        if (request.status >= 200 && request.status < 300) {
+                            const data = JSON.parse(request.responseText);
+                            if (data.success) {
+                                setUploadProgress(100);
+                                setUploadStatus('success');
+                                setUploadMessage('Recording uploaded successfully!');
+                                console.log('✅ Recorded & uploaded:', data);
+                                loadRecordings();
+                                
+                                // Reset status after 3 seconds
+                                setTimeout(() => {
+                                    setUploadStatus('idle');
+                                    setUploadMessage('');
+                                }, 300);
+                            } else {
+                                setUploadStatus('error');
+                                setUploadMessage('Upload failed: ' + (data.message || 'Unknown error'));
+                            }
+                        } else {
+                            setUploadStatus('error');
+                            setUploadMessage('Upload failed: Server error');
+                        }
+                    });
+
+                    request.addEventListener('error', () => {
+                        setUploadStatus('error');
+                        setUploadMessage('Upload failed: Network error');
+                    });
+
+                    request.open('POST', '/api/createRecording');
+                    request.withCredentials = true;
+                    request.send(formData);
                 } catch (err) {
+                    setUploadStatus('error');
+                    setUploadMessage('Upload failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
                     console.error('⚠️ Upload error:', err);
                 }
             };
@@ -148,6 +226,25 @@ export default function AudioImport({loadRecordings}: { loadRecordings: () => vo
                         </Button>
                     )}
                 </div>
+
+                {/* Upload progress and status */}
+                {(uploadStatus === 'uploading' || uploadStatus === 'success' || uploadStatus === 'error') && (
+                    <div className="mt-4">
+                        {uploadStatus === 'uploading' && (
+                            <div className="flex items-center gap-2">
+                                <div className="flex-1">
+                                    <Progress value={uploadProgress || 0} className="h-2" />
+                                </div>
+                                <span className="text-sm text-muted-foreground">{uploadProgress}%</span>
+                            </div>
+                        )}
+                        <div className={`flex items-center gap-2 mt-2 ${uploadStatus === 'success' ? 'text-green-600' : uploadStatus === 'error' ? 'text-red-600' : 'text-blue-600'}`}>
+                            {uploadStatus === 'success' && <CheckCircle className="w-4 h-4" />}
+                            {uploadStatus === 'error' && <AlertCircle className="w-4 h-4" />}
+                            <span className="text-sm">{uploadMessage}</span>
+                        </div>
+                    </div>
+                )}
 
                 {audioUrl && (
                     <div className="mt-4">
