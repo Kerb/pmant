@@ -23,4 +23,9 @@ public class OpenAISpeechRecognizeService implements SpeechRecognizeService {
 
         return responseMono.block();
     }
+
+    @Override
+    public TranscriptionResult getTranscriptionResult(String taskId) {
+        throw new RuntimeException("Не предусмотрено текущей реализацией");
+    }
 }

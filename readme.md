@@ -1,11 +1,3 @@
-## Домен проекта
-
-https://pmant.eu
-
-## Проект с android/iOS/web
-
-https://github.com/Kerb/android-voice-app-908
-
 # Minimal Docker Compose Application
 
 This project demonstrates a minimal application setup using Docker Compose, consisting of:

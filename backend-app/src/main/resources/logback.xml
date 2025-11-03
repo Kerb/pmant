@@ -6,7 +6,8 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
     </root>
+    <logger name="eu.pmant.app" level="debug"/>
 </configuration>

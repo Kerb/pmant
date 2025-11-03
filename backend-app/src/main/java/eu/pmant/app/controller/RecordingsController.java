@@ -1,12 +1,8 @@
 package eu.pmant.app.controller;
 
-import eu.pmant.app.dto.Recording;
-import eu.pmant.app.dto.RecordingCreateResponse;
-import eu.pmant.app.dto.RecordingDetailsResponse;
-import eu.pmant.app.dto.RecordingsResponse;
+import eu.pmant.app.dto.*;
 import eu.pmant.app.generated.jooq.tables.pojos.UserMeetings;
 import eu.pmant.app.repository.MeetingsRepository;
-import eu.pmant.app.service.SpeechRecognizeService;
 import eu.pmant.app.session.SessionDataProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +14,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -34,7 +27,6 @@ public class RecordingsController {
 
     private final MeetingsRepository meetingsRepository;
     private final SessionDataProvider sessionDataProvider;
-    private final SpeechRecognizeService speechRecognizeService;
 
     @PostMapping("/createRecording")
     public ResponseEntity<RecordingCreateResponse> createRecording(@RequestParam("file") MultipartFile file) {
@@ -68,15 +60,11 @@ public class RecordingsController {
             userMeetings.setFilePath(filePath.toString());
             userMeetings.setDuration(0L); //todo реализовать
             userMeetings.setTitle(file.getOriginalFilename());
-            userMeetings.setStatus("Created");
+            userMeetings.setStatus(MeetingStatus.WAIT_TRANSCRIBATION.name());
             userMeetings.setUploadDate(LocalDateTime.now());
+            userMeetings.setSpeech("");
 
             UserMeetings savedUserMeeting = meetingsRepository.create(userMeetings);
-            userMeetings.setSpeech(speechRecognizeService.recognizeSpeech(filePath.toString()));
-            log.info("Распознали текст: {}", userMeetings.getSpeech());
-
-            meetingsRepository.updateSpeech(userMeetings);
-            log.info("Обновили текст в БД для записи {}", userMeetings.getRecordingId());
 
             return ResponseEntity.ok(
                 RecordingCreateResponse.builder()
@@ -135,10 +123,24 @@ public class RecordingsController {
                 );
         }
         log.info("Нашли запись с id: {}", id);
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
         return ResponseEntity.ok(
             RecordingDetailsResponse.builder()
                 .success(true)
-                .meetingDetails(foundMeeting)
+                .meetingDetails(
+                    Recording.builder()
+                        .id(foundMeeting.getRecordingId())
+                        .title(foundMeeting.getTitle())
+                        .date(dateFormatter.format(foundMeeting.getUploadDate()))
+                        .time(timeFormatter.format(foundMeeting.getUploadDate()))
+                        .duration("xx min") // todo реализовать
+                        .status(foundMeeting.getStatus())
+                        .speech(foundMeeting.getSpeech())
+                        .build()
+                )
                 .build()
         );
     }

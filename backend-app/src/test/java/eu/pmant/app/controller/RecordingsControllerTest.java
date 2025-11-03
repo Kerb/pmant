@@ -48,12 +48,13 @@ class RecordingsControllerTest {
             "Path",
             45L,
             "speech",
+            null,
             LocalDateTime.parse("2024-12-01T10:10:10"));
         doReturn(List.of(userMeetings))
             .when(meetingsRepository)
             .findMeetingsByUserId(ArgumentMatchers.any());
 
-        recordingsController = new RecordingsController(meetingsRepository, sessionDataProvider, speechRecognizeService);
+        recordingsController = new RecordingsController(meetingsRepository, sessionDataProvider);
     }
 
     @Test

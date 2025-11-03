@@ -10,6 +10,6 @@ public class RecordingDetailsResponse implements ApiResponse {
 
     boolean success;
 
-    UserMeetings meetingDetails;
+    Recording meetingDetails;
 
 }

@@ -19,4 +19,6 @@ public class Recording {
     private String duration;
     @Nonnull
     private String status;
+
+    private String speech;
 }

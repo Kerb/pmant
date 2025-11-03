@@ -41,6 +41,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      transcriber-app:
+        condition: service_started
+
+  transcriber-app:
+    restart: always
+    build:
+      context: ./transcriber-app
+      dockerfile: Dockerfile
+    expose:
+      - "8000"
+    tmpfs:
+      - /tmp
 
   nginx-prod:
     image: nginx:alpine
