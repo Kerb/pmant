@@ -7,7 +7,9 @@ import eu.pmant.app.service.LocalWhisperSpeechRecognizeService;
 import eu.pmant.app.service.SpeechRecognizeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +21,8 @@ import static eu.pmant.app.service.SpeechRecognizeService.WhisperStatus.FAILED;
 
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "app.speech-to-text.type", havingValue = "local-faster-whisper")
+@Service
 public class AsyncRecognizeSpeechService {
 
     private final MeetingsRepository meetingsRepository;

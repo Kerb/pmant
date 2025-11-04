@@ -10,4 +10,5 @@
         <appender-ref ref="CONSOLE"/>
     </root>
     <logger name="eu.pmant.app" level="debug"/>
+    <logger name="org.springframework" level="debug"/>
 </configuration>

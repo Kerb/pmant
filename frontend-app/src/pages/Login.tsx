@@ -28,7 +28,7 @@ const Login = () => {
 
       if (data.success) {
         console.log("Login successful:", data.message);
-        navigate("/");
+        navigate("/dashboard");
       } else {
         setError(data.message || "Invalid email or password");
       }

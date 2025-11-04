@@ -53,26 +53,28 @@ services:
       - recordings_store:/var/recordings
     environment:
       OPENAI_API_KEY: "${OPENAI_API_KEY}"
+      LEMONFOX_API_KEY: "${LEMONFOX_API_KEY}"
     depends_on:
       db:
         condition: service_healthy
-      transcriber-app:
-        condition: service_started
+#      transcriber-app:
+#        condition: service_started
 
-  transcriber-app:
-    restart: always
-    build:
-      context: ./transcriber-app
-      dockerfile: Dockerfile
-    deploy:
-      resources:
-        limits:
-          cpus: '0.7'
-          memory: 2048M
-    expose:
-      - "8000"
-    tmpfs:
-      - /tmp
+#  временно закомментировано, локальное распознавание требует слишком много ресурсов
+#  transcriber-app:
+#    restart: always
+#    build:
+#      context: ./transcriber-app
+#      dockerfile: Dockerfile
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.7'
+#          memory: 2048M
+#    expose:
+#      - "8000"
+#    tmpfs:
+#      - /tmp
 
   nginx-prod:
     image: nginx:alpine
