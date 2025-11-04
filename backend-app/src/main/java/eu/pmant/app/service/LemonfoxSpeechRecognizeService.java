@@ -1,6 +1,6 @@
 package eu.pmant.app.service;
 
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 public class LemonfoxSpeechRecognizeService implements SpeechRecognizeService {
 
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private final WebClient webClient = WebClient.builder()
         .baseUrl("https://api.lemonfox.ai")
         .build();
@@ -25,7 +26,7 @@ public class LemonfoxSpeechRecognizeService implements SpeechRecognizeService {
     @Override
     public String recognizeSpeech(String audioFilePath) {
         log.info("Передаем в API распознавания текст и синхронно ожидаем ответ....");
-        String recognizedText = webClient.post()
+        String recognizedJsonText = webClient.post()
             .uri("/v1/audio/transcriptions")
             .header("Authorization", "Bearer " + apiKey)
             .body(
@@ -34,8 +35,15 @@ public class LemonfoxSpeechRecognizeService implements SpeechRecognizeService {
             )
             .retrieve()
             .bodyToMono(String.class)
-            .block()
-            .replaceAll("\\n","\n");
+            .block();
+
+        // "Разворачиваем" JSON-строку, если сервер вернул в кавычках
+        String recognizedText;
+        try {
+            recognizedText = MAPPER.readValue(recognizedJsonText, String.class);
+        } catch (Exception e) {
+            recognizedText = recognizedJsonText; // fallback, если всё же вернулся нормальный текст
+        }
         log.info("Получили текст.");
         return recognizedText;
     }
