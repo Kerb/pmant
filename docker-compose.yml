@@ -1,6 +1,11 @@
 services:
   db:
     image: postgres:13-alpine
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1024M
     restart: always
     environment:
       POSTGRES_DB: mydatabase
@@ -23,8 +28,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: '1.0'
+          memory: 256M
     ports:
       - "3000:3000" # React development server port
     environment:
@@ -62,8 +67,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: '0.7'
+          memory: 2048M
     expose:
       - "8000"
     tmpfs:
@@ -89,6 +94,11 @@ services:
 
   nginx-dev:
     image: nginx:alpine
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 128M
     profiles: [ "dev" ]
     ports:
       - "80:80"

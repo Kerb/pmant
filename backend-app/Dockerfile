@@ -7,7 +7,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # run stage
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17
 WORKDIR /app
 COPY --from=build /app/target/backend-app-0.0.1.jar .
 ENTRYPOINT ["java", "-jar", "backend-app-0.0.1.jar"]
