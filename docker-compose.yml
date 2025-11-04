@@ -20,6 +20,11 @@ services:
     build:
       context: ./frontend-app
       dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
     ports:
       - "3000:3000" # React development server port
     environment:
@@ -32,6 +37,11 @@ services:
     build:
       context: ./backend-app
       dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
     ports:
       - "8080:8080"
     volumes:
@@ -49,6 +59,11 @@ services:
     build:
       context: ./transcriber-app
       dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
     expose:
       - "8000"
     tmpfs:
@@ -56,6 +71,11 @@ services:
 
   nginx-prod:
     image: nginx:alpine
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 128M
     profiles: [ "prod" ]
     ports:
       - "80:80"
@@ -86,7 +106,7 @@ services:
       - ./certs:/etc/letsencrypt
       - ./webroot:/var/www/certbot
     entrypoint: >
-      sh -c "certbot certonly --standalone -d pmant.eu --email admin@pmant.eu --agree-tos --non-interactive"
+      sh -c "certbot certonly --standalone -d pmant.pro --email admin@pmant.pro --agree-tos --non-interactive"
 
 volumes:
   recordings_store:

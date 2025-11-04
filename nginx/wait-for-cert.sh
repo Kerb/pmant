@@ -1,5 +1,5 @@
 #!/bin/sh
-DOMAIN="pmant.eu"
+DOMAIN="pmant.pro"
 CERT_DIR="/etc/letsencrypt/live/$DOMAIN"
 TIMEOUT=300
 INTERVAL=5
