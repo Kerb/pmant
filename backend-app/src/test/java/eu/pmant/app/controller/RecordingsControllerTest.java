@@ -49,6 +49,7 @@ class RecordingsControllerTest {
             45L,
             "speech",
             null,
+            null,
             LocalDateTime.parse("2024-12-01T10:10:10"));
         doReturn(List.of(userMeetings))
             .when(meetingsRepository)

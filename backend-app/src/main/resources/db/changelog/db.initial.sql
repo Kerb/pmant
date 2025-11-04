@@ -21,16 +21,17 @@ COMMIT;
 --changeset pmant:0020-users-meetings
 CREATE TABLE user_meetings
 (
-    recording_id      BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id           BIGINT       NOT NULL,
-    title             VARCHAR(255) NOT NULL,
-    status            VARCHAR(255) NOT NULL,
-    file_name         VARCHAR(255) NOT NULL,
-    file_path         VARCHAR(255) NOT NULL,
-    duration          BIGINT       NOT NULL,
-    speech            VARCHAR,
-    recognize_task_id VARCHAR,
-    upload_date       TIMESTAMP,
+    recording_id       BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id            BIGINT       NOT NULL,
+    title              VARCHAR(255) NOT NULL,
+    status             VARCHAR(255) NOT NULL,
+    file_name          VARCHAR(255) NOT NULL,
+    file_path          VARCHAR(255) NOT NULL,
+    duration           BIGINT       NOT NULL,
+    speech             VARCHAR,
+    minutes_of_meeting VARCHAR,
+    recognize_task_id  VARCHAR,
+    upload_date        TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user_account (id)
 );
 
