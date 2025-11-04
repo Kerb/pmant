@@ -28,8 +28,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 256M
+          cpus: '0.5'
+          memory: 512M
     ports:
       - "3000:3000" # React development server port
     environment:
