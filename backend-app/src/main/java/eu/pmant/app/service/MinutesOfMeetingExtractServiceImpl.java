@@ -48,7 +48,6 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             
             #### 🔹 Формат вывода
             
-            ```
             ## Minutes of Meeting
             
             **Дата:** 2025-11-02 \s
@@ -68,7 +67,6 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             
             ### Открытые вопросы
             - Требуется уточнение по приоритетам задач из backlog.
-            ```
             
             ---
             
