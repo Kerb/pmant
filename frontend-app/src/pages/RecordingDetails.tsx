@@ -4,6 +4,8 @@ import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Badge} from "@/components/ui/badge";
 import {ChevronLeft, Download, Calendar, Clock, FileText} from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const RecordingDetails = () => {
     const {id} = useParams();
@@ -112,9 +114,9 @@ const RecordingDetails = () => {
                             </CardHeader>
                             <CardContent>
                                 <div className="prose max-w-none">
-                                    <pre className="whitespace-pre-wrap font-sans">
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                         {recording.minutesOfMeeting ? recording.minutesOfMeeting : 'Minutes of meeting not extracted yet...'}
-                                    </pre>
+                                    </ReactMarkdown>
                                 </div>
                             </CardContent>
                         </Card>
