@@ -28,25 +28,43 @@ public class AsyncMinutesOfMemoryExtractService {
         List<UserMeetings> meetingsToExtractMinutesOfMeeting = meetingsRepository.findMeetingsToExtractMinutesOfMeeting(10);
         for (UserMeetings userMeetingsToExtractMoM : meetingsToExtractMinutesOfMeeting) {
             log.info("Анализируем запись: {}", userMeetingsToExtractMoM.getRecordingId());
-            String speech = userMeetingsToExtractMoM.getSpeech();
-            String newStatus;
+            startProcessing(userMeetingsToExtractMoM);
             try {
-                String minutesOfMeeting = minutesOfMeetingExtractService.extractMinutesOfMeeting(speech).orElse("");
-                newStatus = MeetingStatus.of(userMeetingsToExtractMoM.getStatus())
-                    .map(resolveNewStatus(speech))
-                    .map(Enum::name)
-                    .orElseThrow();
-                userMeetingsToExtractMoM.setMinutesOfMeeting(minutesOfMeeting);
+                finishSuccessfully(userMeetingsToExtractMoM, userMeetingsToExtractMoM.getSpeech());
             } catch (Exception e) {
                 log.error("{}", e.getMessage(), e);
-                newStatus = MeetingStatus.of(userMeetingsToExtractMoM.getStatus())
-                    .map(s -> MeetingStatus.MINUTES_OF_MEETING_FAIL)
-                    .map(Enum::name)
-                    .orElseThrow();
+                finishWithError(userMeetingsToExtractMoM);
             }
-            userMeetingsToExtractMoM.setStatus(newStatus);
-            meetingsRepository.updateStatusAndMoM(userMeetingsToExtractMoM);
+
         }
+    }
+
+    private void finishWithError(UserMeetings userMeetingsToExtractMoM) {
+        String newStatus = MeetingStatus.of(userMeetingsToExtractMoM.getStatus())
+            .map(s -> MeetingStatus.MINUTES_OF_MEETING_FAIL)
+            .map(Enum::name)
+            .orElseThrow();
+        userMeetingsToExtractMoM.setStatus(newStatus);
+        meetingsRepository.updateStatusAndMoM(userMeetingsToExtractMoM);
+    }
+
+    private void finishSuccessfully(UserMeetings userMeetingsToExtractMoM, String speech) {
+        String minutesOfMeeting = minutesOfMeetingExtractService.extractMinutesOfMeeting(speech).orElse("");
+        String newStatus = MeetingStatus.of(userMeetingsToExtractMoM.getStatus())
+            .map(resolveNewStatus(speech))
+            .map(Enum::name)
+            .orElseThrow();
+        userMeetingsToExtractMoM.setMinutesOfMeeting(minutesOfMeeting);
+        userMeetingsToExtractMoM.setStatus(newStatus);
+        meetingsRepository.updateStatusAndMoM(userMeetingsToExtractMoM);
+    }
+
+    private void startProcessing(UserMeetings userMeetingsToExtractMoM) {
+        userMeetingsToExtractMoM.setStatus(MeetingStatus.of(userMeetingsToExtractMoM.getStatus())
+            .map(s -> MeetingStatus.MINUTES_OF_MEETING_IN_PROGRESS)
+            .map(Enum::name)
+            .orElseThrow());
+        meetingsRepository.updateStatusAndMoM(userMeetingsToExtractMoM);
     }
 
     @Nonnull
