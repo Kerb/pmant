@@ -41,7 +41,6 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             **Используй Markdown, нейтральный деловой стиль.**
             Игнорируй приветствия, повторы, не добавляй интерпретаций.
             
-            ```
             ## Minutes of Meeting
             
             **Дата:** (если есть) \s
@@ -58,7 +57,6 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             
             ### Открытые вопросы
             - ...
-            ```
             
             ---
             
