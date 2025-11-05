@@ -90,7 +90,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
 
         ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
             .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText))
-            .model(ChatModel.GPT_3_5_TURBO)
+            .model(ChatModel.CHATGPT_4O_LATEST)
             .build();
 
         ChatCompletion chatCompletion = client.chat().completions().create(params);
