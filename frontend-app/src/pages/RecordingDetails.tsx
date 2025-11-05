@@ -113,7 +113,7 @@ const RecordingDetails = () => {
                             <CardContent>
                                 <div className="prose max-w-none">
                                     <pre className="whitespace-pre-wrap font-sans">
-                                        {recording.mom}
+                                        {recording.minutesOfMeeting ? recording.minutesOfMeeting : 'Minutes of meeting not extracted yet...'}
                                     </pre>
                                 </div>
                             </CardContent>
@@ -129,7 +129,7 @@ const RecordingDetails = () => {
                             <CardContent>
                                 <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
                                   <pre className="whitespace-pre-wrap font-sans text-sm">
-                                    {recording.speech ? recording.speech : 'Запись еще транскрибируется...'}
+                                    {recording.speech ? recording.speech : 'Meeting is not transcribed yet...'}
                                   </pre>
                                 </div>
                             </CardContent>

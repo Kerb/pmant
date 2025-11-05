@@ -52,6 +52,16 @@ public class MeetingsRepository {
             .execute();
     }
 
+    @Transactional
+    public void updateStatusAndMoM(UserMeetings userMeetings) {
+        log.info("Обновление mom, status, recognizeTaskId для записи: {}", userMeetings.getRecordingId());
+        dslContext.update(Tables.USER_MEETINGS)
+            .set(Tables.USER_MEETINGS.STATUS, userMeetings.getStatus())
+            .set(Tables.USER_MEETINGS.MINUTES_OF_MEETING, userMeetings.getMinutesOfMeeting())
+            .where(Tables.USER_MEETINGS.RECORDING_ID.eq(userMeetings.getRecordingId()))
+            .execute();
+    }
+
     public List<UserMeetings> findMeetingsByUserId(Long userId) {
         log.info("Поиск UserMeetings по userId: {}", userId);
         return dslContext.selectFrom(Tables.USER_MEETINGS)
@@ -81,5 +91,18 @@ public class MeetingsRepository {
             .fetchInto(UserMeetings.class);
         log.info("Найдено {} задач в статусе WAIT_TRANSCRIBATION", userMeetingsToProcess.size());
         return Stream.concat(userMeetingsProcessing.stream(), userMeetingsToProcess.stream()).toList();
+    }
+
+    public List<UserMeetings> findMeetingsToExtractMinutesOfMeeting(int maxLimit) {
+        log.info("Поиск UserMeetings для выделения MoM");
+        List<UserMeetings> userMeetingsProcessing = dslContext.selectFrom(Tables.USER_MEETINGS)
+            .where(Tables.USER_MEETINGS.STATUS.eq(MeetingStatus.TRANSCRIBATION_SUCCESS.name()))
+            .limit(maxLimit)
+            .fetchInto(UserMeetings.class);
+
+        log.info("Найдено {} задач в статусе TRANSCRIBATION_SUCCESS, для которых можно запустить распознавание MoM",
+            userMeetingsProcessing.size());
+        return userMeetingsProcessing;
+
     }
 }

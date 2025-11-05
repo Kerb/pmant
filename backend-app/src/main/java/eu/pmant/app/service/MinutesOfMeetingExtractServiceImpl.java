@@ -37,19 +37,19 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             **Входные данные:**
             
             ```
-            [сюда вставляется текст транскрипции]
+            [minutes_of_meeting]
             ```
             
             **Выходные данные (пример формата):**
             
             ```
             ## Minutes of Meeting
-            **Дата:** 2025-11-02 \s
+            **Дата:** 2025-11-02
             **Участники:** Иван (PM), Алексей (Dev), Мария (QA)
             
             ### Основные темы
-            - Обсудили задержку релиза и причины. \s
-            - Решили внести изменения в план спринта. \s
+            - Обсудили задержку релиза и причины.
+            - Решили внести изменения в план спринта.
             
             ### Принятые решения
             - Перенести выпуск версии 1.3 на следующую неделю. \s
@@ -67,7 +67,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             """;
 
         ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-            .addUserMessage(prompt.replace("[сюда вставляется текст транскрипции]", meetingText))
+            .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText))
             .model(ChatModel.GPT_3_5_TURBO)
             .build();
 

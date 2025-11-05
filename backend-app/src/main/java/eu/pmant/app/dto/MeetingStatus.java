@@ -1,8 +1,10 @@
 package eu.pmant.app.dto;
 
 import jakarta.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public enum MeetingStatus {
 
@@ -26,12 +28,35 @@ public enum MeetingStatus {
         @Nonnull
         @Override
         public List<MeetingStatus> getAllowedStatusesForTransition() {
+            return List.of(MINUTES_OF_MEETING_IN_PROGRESS);
+        }
+    },
+
+    TRANSCRIBATION_FAIL {
+        @Nonnull
+        @Override
+        public List<MeetingStatus> getAllowedStatusesForTransition() {
             return List.of();
         }
     },
 
-    TRANSCRIBATION_FAIL{
-        @Nonnull
+    MINUTES_OF_MEETING_IN_PROGRESS {
+        @NotNull
+        @Override
+        public List<MeetingStatus> getAllowedStatusesForTransition() {
+            return List.of(MINUTES_OF_MEETING_SUCCESS, MINUTES_OF_MEETING_FAIL);
+        }
+    },
+
+    MINUTES_OF_MEETING_SUCCESS {
+        @NotNull
+        @Override
+        public List<MeetingStatus> getAllowedStatusesForTransition() {
+            return List.of();
+        }
+    },
+    MINUTES_OF_MEETING_FAIL {
+        @NotNull
         @Override
         public List<MeetingStatus> getAllowedStatusesForTransition() {
             return List.of();
@@ -50,4 +75,12 @@ public enum MeetingStatus {
     @Nonnull
     public abstract List<MeetingStatus> getAllowedStatusesForTransition();
 
+    public static Optional<MeetingStatus> of(String status) {
+        for (MeetingStatus value : values()) {
+            if (value.name().equals(status)) {
+                return Optional.of(value);
+            }
+        }
+        return Optional.empty();
+    }
 }

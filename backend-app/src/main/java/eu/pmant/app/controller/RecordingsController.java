@@ -139,6 +139,7 @@ public class RecordingsController {
                         .duration("xx min") // todo реализовать
                         .status(foundMeeting.getStatus())
                         .speech(foundMeeting.getSpeech())
+                        .minutesOfMeeting(foundMeeting.getMinutesOfMeeting())
                         .build()
                 )
                 .build()

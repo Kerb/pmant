@@ -21,4 +21,5 @@ public class Recording {
     private String status;
 
     private String speech;
+    private String minutesOfMeeting;
 }
