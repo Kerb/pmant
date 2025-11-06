@@ -110,7 +110,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
 
         // Построение запроса
         ChatCompletionCreateParams.Builder createParamsBuilder = ChatCompletionCreateParams.builder()
-            .model(ChatModel.CHATGPT_4O_LATEST) // либо другой поддерживаемый моделью
+            .model(ChatModel.GPT_4_0613) // либо другой поддерживаемый моделью
             .addTool(tool)
             .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText));
 
