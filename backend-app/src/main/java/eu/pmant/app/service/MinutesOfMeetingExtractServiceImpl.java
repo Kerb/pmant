@@ -24,7 +24,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         String prompt = """
             Ты — аналитик, готовящий **Minutes of Meeting (MoM)** по **транскрипту встречи** (менеджеры, разработчики, аналитики и т.д.).
             Работай **только с текстом**, без догадок.
-            Если найдутся Action Items — вызови функцию create_trello_card с параметрами:
+            ЕЕсли найдутся Action Items — используй функцию create_trello_card для каждого Action Item с параметрами:
             - name (имя/роль ответственного, если указано, иначе передавай: "")
             - description (краткое описание задачи)
             - dueDate (строкой, если указан срок, иначе передавай: "" )
@@ -112,7 +112,8 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         ChatCompletionCreateParams.Builder createParamsBuilder = ChatCompletionCreateParams.builder()
             .model(ChatModel.GPT_4_0613) // либо другой поддерживаемый моделью
             .addTool(tool)
-            .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText));
+            .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText))
+            .toolChoice(ChatCompletionToolChoiceOption.Auto.AUTO);
 
         ChatCompletionCreateParams createParams = createParamsBuilder.build();
 
