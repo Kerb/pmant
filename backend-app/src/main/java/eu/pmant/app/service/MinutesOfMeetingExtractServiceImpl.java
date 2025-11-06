@@ -24,10 +24,6 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         String prompt = """
             Ты — аналитик, готовящий **Minutes of Meeting (MoM)** по **транскрипту встречи** (менеджеры, разработчики, аналитики и т.д.).
             Работай **только с текстом**, без догадок.
-            ЕЕсли найдутся Action Items — используй функцию create_trello_card для каждого Action Item с параметрами:
-            - name (имя/роль ответственного, если указано, иначе передавай: "")
-            - description (краткое описание задачи)
-            - dueDate (строкой, если указан срок, иначе передавай: "" )
             
             ---
             
@@ -42,8 +38,23 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             5. **Действия (Action items)** — кто, что, до какого срока (если указано).
             6. **Открытые вопросы** — нерешённые темы или запросы на уточнение.
             
-            Если данных нет — пиши:
-            `(Информация отсутствует в тексте)`
+            Если данных нет — пиши: `(Информация отсутствует в тексте)`
+            
+            Если найдутся Действия(action items) — используй функцию create_trello_card для каждого Action Item с параметрами:
+            - name (имя/роль ответственного, если указано, иначе передавай: "")
+            - description (обязательное поле: краткое описание задачи)
+            - dueDate (строкой, если указан срок, иначе передавай: "")
+            
+            Например, Если есть Action Item:
+            - [Dev] Сделать код-ревью — до 2025-11-10
+            
+            то вызови функцию так:
+            
+            create_trello_card({
+              "name": "Dev",
+              "description": "Сделать код-ревью",
+              "dueDate": "2025-11-10"ƒ
+            })
             
             ---
             
@@ -54,7 +65,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             
             ## Minutes of Meeting
             
-            **Дата:** (если есть) \s
+            **Дата:** (если есть)
             **Участники:** (если есть)
             
             ### Основные темы
@@ -94,7 +105,6 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
                 "dueDate", Map.of("type", "string", "description", "Срок выполнения (если указан)")
             )))
             .putAdditionalProperty("required", JsonValue.from(List.of("description")))
-            .putAdditionalProperty("additionalProperties", JsonValue.from(false))
             .build();
 
         // Определение функции (tool)
