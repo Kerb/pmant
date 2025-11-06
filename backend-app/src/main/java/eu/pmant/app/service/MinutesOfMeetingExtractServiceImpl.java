@@ -40,10 +40,10 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             
             Если данных нет — пиши: `(Информация отсутствует в тексте)`
             
-            Для каждого Action Item вызывай функцию **create_trello_card** с параметрами:
-            - name (имя/роль ответственного, если известно, иначе "")
-            - description (краткое описание задачи)
-            - dueDate (строкой, если указан срок, иначе "")
+            Для каждого Action Item используй функцию ```create_trello_card``` с параметрами:
+            - name (Имя или роль ответственного, если известно)
+            - description (краткое описание Action Item)
+            - dueDate (срок выполнения, если указан)
             
             **Не вставляй вызов функции в текст ответа.**
             
@@ -92,7 +92,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             .putAdditionalProperty("type", JsonValue.from("object"))
             .putAdditionalProperty("properties", JsonValue.from(Map.of(
                 "name", Map.of("type", "string", "description", "Имя или роль ответственного"),
-                "description", Map.of("type", "string", "description", "Описание задачи"),
+                "description", Map.of("type", "string", "description", "Описание Action Item"),
                 "dueDate", Map.of("type", "string", "description", "Срок выполнения (если указан)")
             )))
             .putAdditionalProperty("required", JsonValue.from(List.of("description")))
@@ -101,7 +101,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         // Определение функции (tool)
         FunctionDefinition createTrelloFn = FunctionDefinition.builder()
             .name("create_trello_card")
-            .description("Создать карточку в Trello по Action Item из MoM. Возвращает URL карточки.")
+            .description("Создает карточку Action Item в Trello")
             .parameters(paramsSchema)
             .build();
 
@@ -114,7 +114,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
                 .model(ChatModel.GPT_4_0613)
             .addTool(tool)
             .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText))
-                .toolChoice(ChatCompletionToolChoiceOption.Auto.REQUIRED) // Обязательно вызвать функцию
+                .toolChoice(ChatCompletionToolChoiceOption.Auto.AUTO) // Обязательно вызвать функцию
                 .build();
 
         ChatCompletion completion = client.chat().completions().create(createParams);
