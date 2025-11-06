@@ -40,21 +40,12 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             
             Если данных нет — пиши: `(Информация отсутствует в тексте)`
             
-            Если найдутся Действия(action items) — используй функцию create_trello_card для каждого Action Item с параметрами:
-            - name (имя/роль ответственного, если указано, иначе передавай: "")
-            - description (обязательное поле: краткое описание задачи)
-            - dueDate (строкой, если указан срок, иначе передавай: "")
+            Для каждого Action Item вызывай функцию **create_trello_card** с параметрами:
+            - name (имя/роль ответственного, если известно, иначе "")
+            - description (краткое описание задачи)
+            - dueDate (строкой, если указан срок, иначе "")
             
-            Например, Если есть Action Item:
-            - [Dev] Сделать код-ревью — до 2025-11-10
-            
-            то вызови функцию так:
-            
-            create_trello_card({
-              "name": "Dev",
-              "description": "Сделать код-ревью",
-              "dueDate": "2025-11-10"ƒ
-            })
+            **Не вставляй вызов функции в текст ответа.**
             
             ---
             
@@ -118,16 +109,14 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             .function(createTrelloFn)
             .build();
 
-        // Построение запроса
-        ChatCompletionCreateParams.Builder createParamsBuilder = ChatCompletionCreateParams.builder()
-            .model(ChatModel.GPT_4_0613) // либо другой поддерживаемый моделью
+        // Запрос к модели
+        ChatCompletionCreateParams createParams = ChatCompletionCreateParams.builder()
+                .model(ChatModel.GPT_4_0613)
             .addTool(tool)
             .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText))
-            .toolChoice(ChatCompletionToolChoiceOption.Auto.AUTO);
+                .toolChoice(ChatCompletionToolChoiceOption.Auto.REQUIRED) // Обязательно вызвать функцию
+                .build();
 
-        ChatCompletionCreateParams createParams = createParamsBuilder.build();
-
-        // Отправляем запрос и обрабатываем ответ(ы)
         ChatCompletion completion = client.chat().completions().create(createParams);
 
         List<ChatCompletion.Choice> choices = completion.choices();
@@ -148,13 +137,11 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
 
             for (ChatCompletionMessageFunctionToolCall fnToolCall : toolsCall) {
                 ChatCompletionMessageFunctionToolCall.Function fn = fnToolCall.function();
+
                 String fnName = fn.name();
                 log.info("Модель хотела бы вызвать функцию: {}", fnName);
                 if ("create_trello_card".equals(fnName)) {
-                    Map<String, JsonValue> params = fn._arguments()
-                        .asObject()
-                        .orElse(Map.of());
-
+                    Map<String, JsonValue> params = fn._arguments().asObject().orElse(Map.of());
                     log.info("Call to create_trello_card(" + params + ")");
                 }
             }
