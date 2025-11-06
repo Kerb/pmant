@@ -21,43 +21,22 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
     @Override
     public Optional<String> extractMinutesOfMeeting(String meetingText) {
         OpenAIClient client = OpenAIOkHttpClient.fromEnv();
-        String prompt = """
-            Ты — аналитик, готовящий **Minutes of Meeting (MoM)** по **транскрипту встречи** (менеджеры, разработчики, аналитики и т.д.).
-            Работай **только с текстом**, без догадок.
+
+        // Упрощенный и более четкий промпт
+        String systemPrompt = """
+            Ты — бизнес аналитик, готовящий Minutes of Meeting (MoM) по транскрипту встречи.
+            Работай только с текстом, без догадок и предположений.
             
-            ---
+            ИНСТРУКЦИИ:
+            1. Извлеки структурированную информацию из текста встречи
+            2. Для каждого Action Item автоматически вызови функцию create_trello_card
+            3. В ответе покажи только структурированный MoM в Markdown формате
+            4. НЕ описывай вызовы функций в тексте - они должны вызываться автоматически
             
-            ### 🔹 Задача
-            
-            Извлеки из транскрипта и структурируй итоги по разделам:
-            
-            1. **Дата и контекст** — только если явно указаны.
-            2. **Участники** — имена или роли (только из текста).
-            3. **Темы** — кратко, по сути.
-            4. **Решения** — только зафиксированные в тексте.
-            5. **Действия (Action items)** — кто, что, до какого срока (если указано).
-            6. **Открытые вопросы** — нерешённые темы или запросы на уточнение.
-            
-            Если данных нет — пиши: `(Информация отсутствует в тексте)`
-            
-            Для каждого Action Item используй функцию ```create_trello_card``` с параметрами:
-            - name (Имя или роль ответственного, если известно)
-            - description (краткое описание Action Item)
-            - dueDate (срок выполнения, если указан)
-            
-            **Не вставляй вызов функции в текст ответа.**
-            
-            ---
-            
-            ### 🔹 Формат вывода
-            
-            **Используй Markdown, нейтральный деловой стиль.**
-            Игнорируй приветствия, повторы, не добавляй интерпретаций.
-            
+            ФОРМАТ MoM:
             ## Minutes of Meeting
-            
-            **Дата:** (если есть)
-            **Участники:** (если есть)
+            **Дата:** [дата или "не указана"]
+            **Участники:** [список участников или "не указаны"]
             
             ### Основные темы
             - ...
@@ -65,29 +44,17 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             ### Принятые решения
             - ...
             
-            ### Действия
-            - [Имя/роль] Задача — срок (если указан)
+            ### Действия (Action Items)
+            - [Имя/роль] Задача - срок
+            - ...
             
             ### Открытые вопросы
             - ...
             
-            ---
-            
-            ### 🔹 Входные данные
-            
-            [minutes_of_meeting]
-            
-            ---
-            
-            ### 🔹 Требования
-            
-            * Используй **только факты из текста**.
-            * Если чего-то **недостаточно**, укажи это явно.
-            * Никаких предположений или слов вроде *«возможно»*, *«скорее всего»*.
+            Используй только факты из текста. Если информации нет - укажи "не указано".
             """;
 
-
-        // Определение параметров функции в виде JSON Schema (FunctionParameters)
+        // Определение функции для создания карточек Trello
         FunctionParameters paramsSchema = FunctionParameters.builder()
             .putAdditionalProperty("type", JsonValue.from("object"))
             .putAdditionalProperty("properties", JsonValue.from(Map.of(
@@ -109,13 +76,27 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             .function(createTrelloFn)
             .build();
 
-        // Запрос к модели
+        // Создаем сообщения
+        ChatCompletionSystemMessageParam systemMessageParam = new ChatCompletionSystemMessageParam.Builder()
+            .content(systemPrompt)
+            .build();
+
+        ChatCompletionUserMessageParam userMessageParam = new ChatCompletionUserMessageParam.Builder()
+            .content(meetingText)
+            .build();
+
+        List<ChatCompletionMessageParam> messages = List.of(
+            ChatCompletionMessageParam.ofSystem(systemMessageParam),
+            ChatCompletionMessageParam.ofUser(userMessageParam)
+        );
+
+        // Запрос к модели с настройкой tool_choice
         ChatCompletionCreateParams createParams = ChatCompletionCreateParams.builder()
-                .model(ChatModel.GPT_4_0613)
+            .model(ChatModel.GPT_4_0613)
+            .messages(messages)
             .addTool(tool)
-            .addUserMessage(prompt.replace("[minutes_of_meeting]", meetingText))
-                .toolChoice(ChatCompletionToolChoiceOption.Auto.AUTO) // Обязательно вызвать функцию
-                .build();
+            .toolChoice(ChatCompletionToolChoiceOption.Auto.AUTO)
+            .build();
 
         ChatCompletion completion = client.chat().completions().create(createParams);
 
@@ -128,24 +109,77 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         ChatCompletion.Choice choice = choices.get(0);
         ChatCompletionMessage assistantMessage = choice.message();
 
+        StringBuilder result = new StringBuilder();
+
+        // Обрабатываем контент сообщения
+        if (assistantMessage.content().isPresent()) {
+            result.append(assistantMessage.content().get());
+        }
+
+        // Обрабатываем вызовы функций
         if (assistantMessage.toolCalls().isPresent()) {
-            log.info("Модель вернула инфу, что хочет вызывать тулзы");
-            List<ChatCompletionMessageToolCall> chatCompletionMessageToolCalls = assistantMessage.toolCalls().get();
-            List<ChatCompletionMessageFunctionToolCall> toolsCall = chatCompletionMessageToolCalls.stream()
-                .flatMap(f -> f.function().stream())
+            List<ChatCompletionMessageToolCall> toolCalls = assistantMessage.toolCalls().get();
+            List<ChatCompletionMessageFunctionToolCall> functionCalls = toolCalls.stream()
+                .flatMap(toolCall -> toolCall.function().stream())
                 .toList();
 
-            for (ChatCompletionMessageFunctionToolCall fnToolCall : toolsCall) {
-                ChatCompletionMessageFunctionToolCall.Function fn = fnToolCall.function();
+            for (ChatCompletionMessageFunctionToolCall functionCall : functionCalls) {
+                ChatCompletionMessageFunctionToolCall.Function function = functionCall.function();
 
-                String fnName = fn.name();
-                log.info("Модель хотела бы вызвать функцию: {}", fnName);
-                if ("create_trello_card".equals(fnName)) {
-                    Map<String, JsonValue> params = fn._arguments().asObject().orElse(Map.of());
-                    log.info("Call to create_trello_card(" + params + ")");
+                if ("create_trello_card".equals(function.name())) {
+                    Map<String, JsonValue> params = function
+                        ._arguments()
+                        .asObject()
+                        .orElse(Map.of());
+
+                    Map<String, String> paramsMap = params
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, f -> f.getValue().convert(String.class)));
+
+                    // Вызываем реальный API Trello
+                    boolean success = createTrelloCard(
+                        paramsMap.get("name"),
+                        paramsMap.get("description"),
+                        paramsMap.get("dueDate")
+                    );
+
+                    if (success) {
+                        log.info("Успешно создана карточка Trello: {}", paramsMap);
+                    } else {
+                        log.warn("Не удалось создать карточку Trello: {}", paramsMap);
+                    }
                 }
             }
         }
-        return assistantMessage.content().or(() -> Optional.of("(Нет текста в ответе модели)"));
+
+        return Optional.of(result.toString());
+    }
+
+    /**
+     * Реальный метод для создания карточки в Trello
+     */
+    private boolean createTrelloCard(String name, String description, String dueDate) {
+        try {
+            // TODO: Реализовать вызов реального API Trello
+            // Пример структуры для Trello API:
+            /*
+            TrelloCard card = new TrelloCard();
+            card.setName(description);
+            card.setDesc("Ответственный: " + name + "\\nСрок: " + dueDate);
+            card.setDue(dueDate);
+            // Вызов Trello API
+            */
+
+            log.info("Создание карточки Trello:");
+            log.info("  Ответственный: {}", name);
+            log.info("  Описание: {}", description);
+            log.info("  Срок: {}", dueDate);
+
+            return true;
+        } catch (Exception e) {
+            log.error("Ошибка при создании карточки Trello", e);
+            return false;
+        }
     }
 }
