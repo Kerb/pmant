@@ -66,6 +66,7 @@ public class MeetingsRepository {
         log.info("Поиск UserMeetings по userId: {}", userId);
         return dslContext.selectFrom(Tables.USER_MEETINGS)
             .where(Tables.USER_MEETINGS.USER_ID.eq(userId))
+            .orderBy(Tables.USER_MEETINGS.UPLOAD_DATE.desc())
             .fetchInto(UserMeetings.class);
     }
 
