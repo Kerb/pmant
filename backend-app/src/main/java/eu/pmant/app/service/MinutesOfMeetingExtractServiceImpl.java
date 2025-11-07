@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.responses.Response;
-import com.openai.models.responses.ResponseCreateParams;
-import com.openai.models.responses.ResponseOutputItem;
-import com.openai.models.responses.ResponsePrompt;
+import com.openai.models.responses.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,12 +23,17 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
     public Optional<String> extractMinutesOfMeeting(String meetingText) {
         OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
+        List<ResponseInputItem> inputs = List.of(
+            ResponseInputItem.ofMessage(ResponseInputItem.Message.builder()
+                .addInputTextContent(meetingText)
+                .role(ResponseInputItem.Message.Role.USER)
+                .build())
+        );
+
         ResponseCreateParams.Builder builder = ResponseCreateParams.builder()
-            .prompt(
-                ResponsePrompt.builder().id("pmpt_690daff760088193b2276959934efca00abc42b2e6c34d50").build()
-            )
+            .prompt(ResponsePrompt.builder().id("pmpt_690daff760088193b2276959934efca00abc42b2e6c34d50").build())
             .addTool(CreateTrelloActionItem.class)
-            .input(meetingText);
+            .input(ResponseCreateParams.Input.ofResponse(inputs));
 
         Response response = client.responses().create(builder.build());
         log.info("response: {}", response);
