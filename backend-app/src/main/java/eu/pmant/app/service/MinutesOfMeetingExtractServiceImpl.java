@@ -23,6 +23,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
                 .prompt(
                     ResponsePrompt.builder().id("pmpt_690daff760088193b2276959934efca00abc42b2e6c34d50").build()
                 )
+                .input(meetingText)
                 .build()
         );
         List<ResponseOutputItem> outputItems = response.output();
