@@ -2,15 +2,14 @@ package eu.pmant.app.service;
 
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.responses.Response;
-import com.openai.models.responses.ResponseCreateParams;
-import com.openai.models.responses.ResponseOutputItem;
-import com.openai.models.responses.ResponsePrompt;
+import com.openai.models.responses.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -26,10 +25,12 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
                 .input(meetingText)
                 .build()
         );
-        List<ResponseOutputItem> outputItems = response.output();
-        for (ResponseOutputItem outputItem : outputItems) {
-            log.info("outputItem: {}", outputItem);
-        }
-        return Optional.empty();
+        log.info("response: {}", response);
+        return Optional.ofNullable(response.output().stream()
+            .flatMap(outputItem -> outputItem.message().stream())
+            .flatMap(item ->item.content().stream())
+            .flatMap(content ->content.outputText().stream())
+            .flatMap(outputItem -> Stream.of(outputItem.text()))
+            .collect(Collectors.joining()));
     }
 }
