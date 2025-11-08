@@ -13,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -29,7 +30,8 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
     public Optional<String> extractMinutesOfMeeting(String meetingText) {
         OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
-        List<ResponseInputItem> inputs = List.of(
+        List<ResponseInputItem> inputs = new ArrayList();
+        inputs.add(
             ResponseInputItem.ofMessage(ResponseInputItem.Message.builder()
                 .addInputTextContent(meetingText)
                 .role(ResponseInputItem.Message.Role.USER)
