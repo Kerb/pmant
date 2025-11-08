@@ -38,12 +38,13 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
                 .build())
         );
 
-        ResponseCreateParams.Builder builder = ResponseCreateParams.builder()
+        ResponseCreateParams.Builder createParamsBuilder = ResponseCreateParams.builder()
             .prompt(ResponsePrompt.builder().id("pmpt_690daff760088193b2276959934efca00abc42b2e6c34d50").build())
             .addTool(CreateTrelloActionItem.class)
+            .toolChoice(ToolChoiceOptions.AUTO) // 🔥 ключевой момент
             .input(ResponseCreateParams.Input.ofResponse(inputs));
 
-        Response response = client.responses().create(builder.build());
+        Response response = client.responses().create(createParamsBuilder.build());
         log.info("response: {}", response);
 
         // Поиск и логирование tool calls, если есть (доступно — зависит от модели и вашей интеграции)
@@ -55,7 +56,9 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         if (CollectionUtils.isNotEmpty(functionShouldBeCalledByModelDecision)) {
             try {
                 log.info("Модель решила вызвать tools: {}", OBJECT_MAPPER.writeValueAsString(functionShouldBeCalledByModelDecision));
-                response = client.responses().create(builder.build());
+                createParamsBuilder.input(ResponseCreateParams.Input.ofResponse(inputs));
+                response = client.responses().create(createParamsBuilder.build());
+
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
