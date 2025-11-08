@@ -103,7 +103,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
 
     @Slf4j
     @Data
-    @JsonClassDescription("Создаёт карточку с Action Item в Trello по данным из текста.")
+    @JsonClassDescription("Функция create_trello_card")
     public static class CreateTrelloActionItem {
 
         @JsonPropertyDescription("Имя или роль ответственного (если указано)")
