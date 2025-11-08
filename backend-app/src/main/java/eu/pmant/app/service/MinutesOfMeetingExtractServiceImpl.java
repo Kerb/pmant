@@ -8,6 +8,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.responses.*;
 import lombok.Data;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -44,9 +45,9 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             .toolChoice(ToolChoiceOptions.AUTO) // 🔥 ключевой момент
             .input(ResponseCreateParams.Input.ofResponse(inputs));
 
-        ResponseCreateParams firstUserRequest = createParamsBuilder.build();
-        log.info("firstUserRequest: {}", firstUserRequest);
-        Response response = client.responses().create(firstUserRequest);
+        ResponseCreateParams firstLlmRequest = createParamsBuilder.build();
+        log.info("firstLlmRequest: {}", firstLlmRequest);
+        Response response = client.responses().create(firstLlmRequest);
         log.info("response: {}", response);
 
         // Поиск и логирование tool calls, если есть (доступно — зависит от модели и вашей интеграции)
@@ -58,9 +59,11 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         if (CollectionUtils.isNotEmpty(functionShouldBeCalledByModelDecision)) {
             try {
                 log.info("Модель решила вызвать tools: {}", OBJECT_MAPPER.writeValueAsString(functionShouldBeCalledByModelDecision));
-                createParamsBuilder.input(ResponseCreateParams.Input.ofResponse(inputs));
-                response = client.responses().create(firstUserRequest);
 
+                ResponseCreateParams secondLlmRequest = createParamsBuilder.input(ResponseCreateParams.Input.ofResponse(inputs)).build();
+                log.info("secondLlmRequest: {}", secondLlmRequest);
+                response = client.responses().create(secondLlmRequest);
+                log.info("response: {}", response);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -122,9 +125,19 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         @JsonPropertyDescription("Срок выполнения (если указан)")
         private String dueDate;
 
-        public boolean execute() {
+        public CreateTrelloActionItemResult execute() {
             log.info("Вызов функции CreateTrelloActionItem ('{}', '{}', '{}')", name, description, dueDate);
-            return true;
+            return CreateTrelloActionItemResult.ofSuccess();
+        }
+    }
+
+    @JsonClassDescription("Результат вызова create_trello_card")
+    public record CreateTrelloActionItemResult(
+
+        @JsonPropertyDescription("true: вызов успешный; false: ошибки вызова") boolean success) {
+
+        public static CreateTrelloActionItemResult ofSuccess() {
+            return new CreateTrelloActionItemResult(true);
         }
     }
 }
