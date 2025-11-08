@@ -44,7 +44,9 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             .toolChoice(ToolChoiceOptions.AUTO) // 🔥 ключевой момент
             .input(ResponseCreateParams.Input.ofResponse(inputs));
 
-        Response response = client.responses().create(createParamsBuilder.build());
+        ResponseCreateParams firstUserRequest = createParamsBuilder.build();
+        log.info("firstUserRequest: {}", firstUserRequest);
+        Response response = client.responses().create(firstUserRequest);
         log.info("response: {}", response);
 
         // Поиск и логирование tool calls, если есть (доступно — зависит от модели и вашей интеграции)
@@ -57,7 +59,7 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
             try {
                 log.info("Модель решила вызвать tools: {}", OBJECT_MAPPER.writeValueAsString(functionShouldBeCalledByModelDecision));
                 createParamsBuilder.input(ResponseCreateParams.Input.ofResponse(inputs));
-                response = client.responses().create(createParamsBuilder.build());
+                response = client.responses().create(firstUserRequest);
 
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
