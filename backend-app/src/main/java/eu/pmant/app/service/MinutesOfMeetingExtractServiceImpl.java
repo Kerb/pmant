@@ -92,12 +92,19 @@ public class MinutesOfMeetingExtractServiceImpl implements MinutesOfMeetingExtra
         };
     }
 
-    private static Object callFunction(ResponseFunctionToolCall function) {
-        switch (function.name()) {
+    private static Object callFunction(ResponseFunctionToolCall functionCall) {
+        switch (functionCall.name()) {
             case "create_trello_card":
-                return function.arguments(CreateTrelloActionItem.class).execute();
+                return functionCall.arguments(CreateTrelloActionItem.class).execute();
+            case "CreateTrelloActionItem":
+                return functionCall.arguments(CreateTrelloActionItem.class).execute();
             default:
-                throw new IllegalArgumentException("Unknown function: " + function.name());
+                try {
+                    log.info("Модель решила сделать вызов функции: {}", OBJECT_MAPPER.writeValueAsString(functionCall));
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+                return false;
         }
     }
 
