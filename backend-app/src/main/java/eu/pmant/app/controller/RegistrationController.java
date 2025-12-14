@@ -8,6 +8,7 @@ import eu.pmant.app.session.SessionDataProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -26,6 +27,7 @@ import java.util.TreeMap;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class RegistrationController {
 
     private final UserService userService;
@@ -58,6 +60,7 @@ public class RegistrationController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
+        log.error("{}", ex.getMessage(), ex);
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", "An unexpected error occurred: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);

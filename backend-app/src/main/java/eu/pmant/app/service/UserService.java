@@ -2,6 +2,7 @@ package eu.pmant.app.service;
 
 import eu.pmant.app.generated.jooq.tables.pojos.UserAccount;
 import eu.pmant.app.repository.UserRepository;
+import eu.pmant.app.repository.UserRepositoryImpl;
 import eu.pmant.app.util.PasswordUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

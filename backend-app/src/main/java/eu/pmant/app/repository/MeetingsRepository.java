@@ -7,6 +7,7 @@ import eu.pmant.app.generated.jooq.tables.records.UserMeetingsRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Repository
 @Slf4j
+@Profile("prod")
 public class MeetingsRepository {
 
     private final DSLContext dslContext;
